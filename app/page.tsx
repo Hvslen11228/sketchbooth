@@ -2,9 +2,12 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera as CameraIcon, Globe } from "lucide-react";
+import Link from "next/link";
 import Camera from "@/components/Camera";
 import ResultScreen from "@/components/ResultScreen";
 import AdComponent from "@/components/AdComponent";
+import ScenePicker from "@/components/ScenePicker";
+import { SceneId, getSceneById } from "@/utils/scenes";
 
 type AppState = "home" | "camera" | "result";
 
@@ -13,8 +16,10 @@ export default function Home() {
   const [lang, setLang] = useState<"mn" | "en">("mn");
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [capturedFilter, setCapturedFilter] = useState<string>("none");
+  const [scene, setScene] = useState<SceneId>("neon_default");
 
   const t = (mn: string, en: string) => lang === "mn" ? mn : en;
+  const currentScene = getSceneById(scene);
 
   const handlePhotosComplete = useCallback((photos: string[], filter: string) => {
     setCapturedPhotos(photos);
@@ -29,7 +34,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="gradient-bg min-h-screen relative">
+    <div
+      className="min-h-screen relative"
+      style={{ background: currentScene.bodyCSS }}
+    >
+      {/* Dynamic scene overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 transition-all duration-700"
+        style={{ background: currentScene.overlayCSS }}
+      />
+
       <div className="relative z-10 min-h-screen flex flex-col">
 
         {/* ── Header ─────────────────────────────────────────── */}
@@ -47,7 +61,6 @@ export default function Home() {
           </motion.button>
 
           <div className="flex items-center gap-3">
-            {/* Language toggle */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
@@ -58,26 +71,29 @@ export default function Home() {
             </motion.button>
           </div>
 
-          {/* Ad in header — non-intrusive */}
           <div className="hidden md:block">
             <AdComponent adSlot="1122334455" format="horizontal" className="w-40 opacity-60" />
           </div>
         </header>
 
+        {/* ── Scene picker — always visible at top ───────────── */}
+        <div className="px-4 pt-4">
+          <ScenePicker selected={scene} onChange={setScene} lang={lang} />
+        </div>
+
         {/* ── Main content ───────────────────────────────────── */}
         <main className="flex-1 flex flex-col items-center justify-start px-4 py-6 gap-6">
           <AnimatePresence mode="wait">
 
-            {/* HOME screen */}
+            {/* HOME */}
             {appState === "home" && (
               <motion.div
                 key="home"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
-                className="flex flex-col items-center gap-8 max-w-md mx-auto text-center pt-8"
+                className="flex flex-col items-center gap-8 max-w-md mx-auto text-center pt-4"
               >
-                {/* Hero emoji */}
                 <motion.div
                   animate={{ y: [0, -10, 0], rotate: [0, 3, -3, 0] }}
                   transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
@@ -86,9 +102,9 @@ export default function Home() {
                   📸
                 </motion.div>
 
-                {/* Title */}
                 <div>
-                  <h1 className="text-5xl font-black text-white text-glow-pink leading-tight">
+                  <h1 className="text-5xl font-black text-white leading-tight"
+                    style={{ textShadow: "0 0 30px rgba(255,45,120,0.5)" }}>
                     Funny<br />
                     <span style={{ color: "#ff2d78" }}>Photobooth</span>
                   </h1>
@@ -97,7 +113,6 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Description */}
                 <p className="text-white/60 text-lg leading-relaxed">
                   {t(
                     "4 зураг авч, хөгжилтэй caption нэмж, найздаа share хий! 🔥",
@@ -105,28 +120,35 @@ export default function Home() {
                   )}
                 </p>
 
-                {/* Feature pills */}
+                {/* Feature pills with icons */}
                 <div className="flex flex-wrap gap-2 justify-center">
                   {[
-                    t("📸 4 зураг", "📸 4 photos"),
-                    t("🎨 Filter", "🎨 Filters"),
-                    t("😂 Хөгжилтэй", "😂 Funny captions"),
-                    t("🎭 Стикер", "🎭 Stickers"),
-                    t("📥 Татах", "📥 Download"),
+                    { icon: "📸", text: t("4 зураг", "4 photos") },
+                    { icon: "🎨", text: t("Filter", "Filters") },
+                    { icon: "😂", text: t("Хөгжилтэй", "Funny captions") },
+                    { icon: "🖼️", text: t("Frame", "Frames") },
+                    { icon: "🎭", text: t("Стикер", "Stickers") },
+                    { icon: "📥", text: t("Татах", "Download") },
                   ].map((f) => (
-                    <span key={f} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-white/60 text-sm font-medium">
-                      {f}
+                    <span
+                      key={f.text}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-white/60 text-sm font-medium"
+                    >
+                      <span>{f.icon}</span>
+                      <span>{f.text}</span>
                     </span>
                   ))}
                 </div>
 
-                {/* Start button */}
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   whileHover={{ scale: 1.04 }}
                   onClick={() => setAppState("camera")}
-                  className="relative w-full py-6 rounded-3xl font-black text-2xl text-white overflow-hidden glow-pink"
-                  style={{ background: "linear-gradient(135deg, #ff2d78, #a855f7, #06b6d4)" }}
+                  className="relative w-full py-6 rounded-3xl font-black text-2xl text-white overflow-hidden"
+                  style={{
+                    background: "linear-gradient(135deg, #ff2d78, #a855f7, #06b6d4)",
+                    boxShadow: "0 0 30px rgba(255,45,120,0.4), 0 0 60px rgba(168,85,247,0.2)"
+                  }}
                 >
                   <motion.div
                     animate={{ x: ["0%", "200%"] }}
@@ -142,7 +164,7 @@ export default function Home() {
               </motion.div>
             )}
 
-            {/* CAMERA screen */}
+            {/* CAMERA */}
             {appState === "camera" && (
               <motion.div
                 key="camera"
@@ -155,7 +177,7 @@ export default function Home() {
               </motion.div>
             )}
 
-            {/* RESULT screen */}
+            {/* RESULT */}
             {appState === "result" && (
               <motion.div
                 key="result"
@@ -177,13 +199,24 @@ export default function Home() {
         </main>
 
         {/* ── Footer ─────────────────────────────────────────── */}
-        <footer className="py-4 px-4 text-center border-t border-white/5">
-          <p className="text-white/20 text-xs">
-            © 2025 FunnyBooth MN •{" "}
-            <span className="text-pink-500/60">
+        <footer className="py-5 px-4 border-t border-white/5">
+          <div className="max-w-xl mx-auto flex flex-col items-center gap-3">
+            <div className="flex items-center gap-5 text-xs text-white/30">
+              <Link href="/faq" className="hover:text-white/70 transition-colors flex items-center gap-1">
+                ❓ {t("Асуулт", "FAQ")}
+              </Link>
+              <Link href="/contact" className="hover:text-white/70 transition-colors flex items-center gap-1">
+                📬 {t("Холбоо барих", "Contact")}
+              </Link>
+              <Link href="/privacy" className="hover:text-white/70 transition-colors flex items-center gap-1">
+                🔒 {t("Нууцлал", "Privacy")}
+              </Link>
+            </div>
+            <p className="text-white/15 text-xs">
+              © 2025 FunnyBooth MN •{" "}
               {t("Монголын хамгийн хөгжилтэй photo booth", "Mongolia's funniest photobooth")}
-            </span>
-          </p>
+            </p>
+          </div>
         </footer>
       </div>
     </div>

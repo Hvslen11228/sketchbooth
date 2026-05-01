@@ -100,7 +100,32 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       {/* Ad — result screen only */}
       <AdComponent adSlot="0987654321" format="horizontal" className="opacity-60" />
 
-      {/* Caption only */}
+      {/* Mood card — icon + label */}
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.1, type: "spring" }}
+        className="flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/10"
+        style={{ background: "rgba(255,255,255,0.04)" }}
+      >
+        <motion.span
+          animate={{ scale: [1, 1.15, 1] }}
+          transition={{ repeat: Infinity, duration: 1.8 }}
+          className="text-4xl flex-shrink-0"
+        >
+          {result.mood.emoji}
+        </motion.span>
+        <div>
+          <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5">
+            {t("Өнөөдрийн байдал", "Today's Mood")}
+          </p>
+          <p className="text-white font-black text-base">
+            {lang === "mn" ? result.mood.label_mn : result.mood.label_en}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Caption */}
       <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-2xl px-4 py-3">
         <p className="text-yellow-300 font-black text-center text-lg">{result.caption}</p>
       </div>
