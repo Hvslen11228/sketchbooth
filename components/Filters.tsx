@@ -11,7 +11,7 @@ interface FiltersProps {
 export default function Filters({ selected, onChange, lang }: FiltersProps) {
   return (
     <div className="w-full">
-      <p className="text-white/50 text-xs text-center mb-2 tracking-widest uppercase">
+      <p className="text-gray-400 text-xs text-center mb-2 tracking-widest uppercase">
         {lang === "mn" ? "Шүүлтүүр" : "Filter"}
       </p>
       <div className="flex gap-2 overflow-x-auto pb-1 justify-center flex-wrap">
@@ -24,7 +24,7 @@ export default function Filters({ selected, onChange, lang }: FiltersProps) {
             className={`flex-shrink-0 px-3 py-2 rounded-xl text-sm font-bold transition-all border-2 ${
               selected === f.id
                 ? "bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-500/40"
-                : "bg-white/5 border-white/10 text-white/70 hover:border-white/30"
+                : "bg-white border-gray-200 text-gray-600 hover:border-purple-300"
             }`}
           >
             <span className="mr-1">{f.emoji}</span>
