@@ -200,23 +200,28 @@ export default function Home() {
           </AnimatePresence>
         </main>
 
+
         {/* ── Footer ──────────────────────────────────────── */}
-        <footer className="py-5 px-4 border-t border-white/5">
-          <div className="max-w-xl mx-auto flex flex-col items-center gap-3">
-            <div className="flex items-center gap-5 text-xs text-white/30">
-              <Link href="/faq" className="hover:text-white/70 transition-colors">
-                ❓ {t("Асуулт", "FAQ")}
-              </Link>
-              <Link href="/contact" className="hover:text-white/70 transition-colors">
-                📬 {t("Холбоо барих", "Contact")}
-              </Link>
-              <Link href="/privacy" className="hover:text-white/70 transition-colors">
-                🔒 {t("Нууцлал", "Privacy")}
-              </Link>
+        <footer className="py-6 px-4 border-t border-white/10">
+          <div className="max-w-xl mx-auto flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              {[
+                { href: "/faq",     icon: "❓", label: lang === "mn" ? "Асуулт" : "FAQ" },
+                { href: "/contact", icon: "📬", label: lang === "mn" ? "Холбоо барих" : "Contact" },
+                { href: "/privacy", icon: "🔒", label: lang === "mn" ? "Нууцлал" : "Privacy" },
+              ].map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                  style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.8)" }}
+                >
+                  <span className="text-base">{l.icon}</span>
+                  <span>{l.label}</span>
+                </Link>
+              ))}
             </div>
-            <p className="text-white/15 text-xs">
-              © 2025 FunnyBooth MN
-            </p>
+            <p className="text-white/25 text-xs">© 2025 FunnyBooth MN</p>
           </div>
         </footer>
       </div>
