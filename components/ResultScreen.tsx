@@ -101,24 +101,24 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       {/* Header label */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-[#2a2a2a]" />
-        <span className="font-mono text-[10px] text-[#8a8070] tracking-widest">ТАНЫ ЗУРГИЙН ХЭСЭГ</span>
+        <span className="font-mono text-[10px] text-[#6b6860] tracking-widest">ТАНЫ ЗУРГИЙН ХЭСЭГ</span>
         <div className="h-px flex-1 bg-[#2a2a2a]" />
       </div>
 
       {/* Frame picker */}
-      <div className="border border-[#2a2a2a] bg-[#111] p-4">
+      <div className="border border-[#e8e5e0] bg-white p-4">
         <FramePicker selected={frame} onChange={handleFrameChange} lang={lang} />
       </div>
 
       {/* Sticker toggle */}
       <div className="flex items-center gap-3 px-1">
-        <span className="font-mono text-[10px] text-[#8a8070] tracking-widest flex-1">
+        <span className="font-mono text-[10px] text-[#6b6860] tracking-widest flex-1">
           {t("СТИКЕР OVERLAY", "STICKER OVERLAY")}
         </span>
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleStickerToggle}
-          className={`relative w-10 h-5 rounded-sm transition-colors ${showStickers ? "bg-[#d4a843]" : "bg-[#2a2a2a]"}`}
+          className={`relative w-10 h-5 rounded-sm transition-colors ${showStickers ? "bg-[#c8913a]" : "bg-[#2a2a2a]"}`}
         >
           <motion.div
             animate={{ x: showStickers ? 20 : 2 }}
@@ -129,16 +129,16 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       </div>
 
       {/* Strip preview */}
-      <div className="relative border border-[#2a2a2a]">
+      <div className="relative border border-[#e8e5e0]">
         {generating && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0d0d0d]/90 z-10 gap-3">
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-10 gap-3">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
               className="w-8 h-8 border-2 border-t-transparent rounded-sm"
               style={{ borderColor: `${currentFrame.accentColor}40`, borderTopColor: currentFrame.accentColor }}
             />
-            <span className="font-mono text-[10px] text-[#8a8070] tracking-widest">
+            <span className="font-mono text-[10px] text-[#6b6860] tracking-widest">
               {t("БОЛОВСРУУЛЖ БАЙНА...", "PROCESSING...")}
             </span>
           </div>
@@ -151,7 +151,7 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
         <motion.button
           whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
           onClick={handleDownload} disabled={!stripUrl || generating}
-          className="flex items-center justify-center gap-2 py-4 font-display text-xl tracking-wider text-[#0d0d0d] disabled:opacity-30 transition-colors"
+          className="flex items-center justify-center gap-2 py-4 font-display text-xl tracking-wider text-white disabled:opacity-30 transition-colors"
           style={{ background: generating ? "#555" : "#d4a843" }}
         >
           <Download className="w-4 h-4" />
@@ -161,7 +161,7 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
         <motion.button
           whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
           onClick={handleShare} disabled={!stripUrl || generating}
-          className="flex items-center justify-center gap-2 py-4 font-display text-xl tracking-wider border border-[#d4a843] text-[#d4a843] hover:bg-[#d4a843]/10 disabled:opacity-30 transition-colors"
+          className="flex items-center justify-center gap-2 py-4 font-display text-xl tracking-wider border border-[#c8913a] text-[#c8913a] hover:bg-[#c8913a]/10 disabled:opacity-30 transition-colors"
         >
           <Share2 className="w-4 h-4" />
           <AnimatePresence mode="wait">
@@ -176,7 +176,7 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       <motion.button
         whileTap={{ scale: 0.98 }}
         onClick={onRetake}
-        className="flex items-center justify-center gap-2 py-3 font-mono text-xs text-[#8a8070] border border-[#2a2a2a] hover:border-[#8a8070] hover:text-[#f5f0e8] transition-all tracking-widest"
+        className="flex items-center justify-center gap-2 py-3 font-mono text-xs text-[#6b6860] border border-[#e8e5e0] hover:border-[#8a8070] hover:text-[#111110] transition-all tracking-widest"
       >
         <RefreshCw className="w-3.5 h-3.5" />
         {t("ДАХИН АВАХ", "RETAKE")}

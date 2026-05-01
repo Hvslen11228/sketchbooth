@@ -11,7 +11,7 @@ interface FramePickerProps {
 export default function FramePicker({ selected, onChange, lang }: FramePickerProps) {
   return (
     <div className="w-full">
-      <p className="font-mono text-[9px] text-[#8a8070] tracking-widest mb-3 text-center">
+      <p className="font-mono text-[9px] text-[#6b6860] tracking-widest mb-3 text-center">
         {lang === "mn" ? "ХҮРЭЭНИЙ ЗАГВАР / FRAME" : "FRAME STYLE"}
       </p>
       <div className="flex gap-3 overflow-x-auto pb-2 px-1" style={{ scrollbarWidth: "none" }}>
@@ -56,7 +56,7 @@ export default function FramePicker({ selected, onChange, lang }: FramePickerPro
                   </motion.div>
                 )}
               </div>
-              <span className={`font-mono text-[9px] tracking-wide transition-colors whitespace-nowrap ${isSelected ? "text-[#d4a843]" : "text-[#8a8070]/60 group-hover:text-[#8a8070]"}`}>
+              <span className={`font-mono text-[9px] tracking-wide transition-colors whitespace-nowrap ${isSelected ? "text-[#c8913a]" : "text-[#6b6860]/60 group-hover:text-[#6b6860]"}`}>
                 {frame.emoji}
               </span>
             </motion.button>
