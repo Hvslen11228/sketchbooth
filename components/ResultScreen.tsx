@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, RefreshCw, Share2, Sticker } from "lucide-react";
+import { Download, RefreshCw, Share2 } from "lucide-react";
 import PhotoStrip from "./PhotoStrip";
 import AdComponent from "./AdComponent";
 import FramePicker from "./FramePicker";
@@ -63,20 +63,20 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
     if (!stripUrl) return;
     const a = document.createElement("a");
     a.href = stripUrl;
-    a.download = `funny-photobooth-mn-${Date.now()}.png`;
+    a.download = `fotoboodal-${Date.now()}.png`;
     a.click();
   };
 
   const handleShare = async () => {
     const shareText = lang === "mn"
-      ? `Funny Photobooth Mongolia-д зураг авлаа! 📸🔥\n\nТа ч авж үзээрэй 👉 funnyphotobooth.mn`
-      : `Just took photos at Funny Photobooth Mongolia! 📸🔥\n\nTry it 👉 funnyphotobooth.mn`;
+      ? `Фото Буудал-д зураг авлаа! 📸\n\nТа ч авж үзээрэй 👉 funnyphotobooth.mn`
+      : `Took photos at Foto Boodal MN! 📸\n\nTry it 👉 funnyphotobooth.mn`;
     if (navigator.share && stripUrl) {
       try {
         const res = await fetch(stripUrl);
         const blob = await res.blob();
-        const file = new File([blob], "photobooth.png", { type: "image/png" });
-        await navigator.share({ title: "Funny Photobooth MN", text: shareText, files: [file] });
+        const file = new File([blob], "fotoboodal.png", { type: "image/png" });
+        await navigator.share({ title: "Фото Буудал MN", text: shareText, files: [file] });
         return;
       } catch { /* fallback */ }
     }
@@ -92,45 +92,55 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-xl mx-auto flex flex-col gap-5"
+      className="w-full max-w-xl mx-auto flex flex-col gap-4"
     >
-      {/* Ad */}
-      <AdComponent adSlot="0987654321" format="horizontal" className="opacity-70" />
+      <AdComponent adSlot="0987654321" format="horizontal" className="opacity-50" />
 
-      {/* Frame picker — хамгийн дээр */}
-      <div className="rounded-2xl p-4 border-2 border-purple-100 bg-white shadow-sm">
+      {/* Header label */}
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-[#2a2a2a]" />
+        <span className="font-mono text-[10px] text-[#8a8070] tracking-widest">ТАНЫ ЗУРГИЙН ХЭСЭГ</span>
+        <div className="h-px flex-1 bg-[#2a2a2a]" />
+      </div>
+
+      {/* Frame picker */}
+      <div className="border border-[#2a2a2a] bg-[#111] p-4">
         <FramePicker selected={frame} onChange={handleFrameChange} lang={lang} />
       </div>
 
       {/* Sticker toggle */}
-      <div className="flex items-center justify-center gap-3">
-        <Sticker className="w-4 h-4 text-gray-400" />
-        <p className="text-gray-500 text-sm font-medium">{t("Стикер", "Stickers")}</p>
+      <div className="flex items-center gap-3 px-1">
+        <span className="font-mono text-[10px] text-[#8a8070] tracking-widest flex-1">
+          {t("СТИКЕР OVERLAY", "STICKER OVERLAY")}
+        </span>
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={handleStickerToggle}
-          className={`relative w-12 h-6 rounded-full transition-colors ${showStickers ? "bg-purple-500" : "bg-gray-200"}`}
+          className={`relative w-10 h-5 rounded-sm transition-colors ${showStickers ? "bg-[#d4a843]" : "bg-[#2a2a2a]"}`}
         >
           <motion.div
-            animate={{ x: showStickers ? 24 : 2 }}
+            animate={{ x: showStickers ? 20 : 2 }}
             transition={{ type: "spring", stiffness: 400 }}
-            className="absolute top-1 w-4 h-4 bg-white rounded-full shadow"
+            className="absolute top-0.5 w-4 h-4 bg-[#0d0d0d] rounded-sm shadow"
           />
         </motion.button>
       </div>
 
       {/* Strip preview */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg">
+      <div className="relative border border-[#2a2a2a]">
         {generating && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 rounded-2xl">
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0d0d0d]/90 z-10 gap-3">
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-              className="w-10 h-10 border-4 border-t-transparent rounded-full"
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              className="w-8 h-8 border-2 border-t-transparent rounded-sm"
               style={{ borderColor: `${currentFrame.accentColor}40`, borderTopColor: currentFrame.accentColor }}
             />
+            <span className="font-mono text-[10px] text-[#8a8070] tracking-widest">
+              {t("БОЛОВСРУУЛЖ БАЙНА...", "PROCESSING...")}
+            </span>
           </div>
         )}
         <PhotoStrip photos={photos} stripUrl={stripUrl} lang={lang} />
@@ -139,38 +149,37 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       {/* Action buttons */}
       <div className="grid grid-cols-2 gap-3">
         <motion.button
-          whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
           onClick={handleDownload} disabled={!stripUrl || generating}
-          className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-white disabled:opacity-40 shadow-md"
-          style={{ background: "linear-gradient(135deg, #ff2d78, #a855f7)", boxShadow: "0 4px 20px rgba(255,45,120,0.35)" }}
+          className="flex items-center justify-center gap-2 py-4 font-display text-xl tracking-wider text-[#0d0d0d] disabled:opacity-30 transition-colors"
+          style={{ background: generating ? "#555" : "#d4a843" }}
         >
-          <Download className="w-5 h-5" />
-          {t("Татах", "Download")}
+          <Download className="w-4 h-4" />
+          {t("ТАТАХ", "DOWNLOAD")}
         </motion.button>
 
         <motion.button
-          whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.01 }}
           onClick={handleShare} disabled={!stripUrl || generating}
-          className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-white disabled:opacity-40 shadow-md"
-          style={{ background: "linear-gradient(135deg, #06b6d4, #3b82f6)", boxShadow: "0 4px 20px rgba(6,182,212,0.35)" }}
+          className="flex items-center justify-center gap-2 py-4 font-display text-xl tracking-wider border border-[#d4a843] text-[#d4a843] hover:bg-[#d4a843]/10 disabled:opacity-30 transition-colors"
         >
-          <Share2 className="w-5 h-5" />
+          <Share2 className="w-4 h-4" />
           <AnimatePresence mode="wait">
             {copied
-              ? <motion.span key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>✓ {t("Хуулагдлаа", "Copied!")}</motion.span>
-              : <motion.span key="s" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{t("Хуваалцах", "Share")}</motion.span>
+              ? <motion.span key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>✓ {t("ХУУЛАГДЛАА", "COPIED!")}</motion.span>
+              : <motion.span key="s" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>{t("SHARE", "SHARE")}</motion.span>
             }
           </AnimatePresence>
         </motion.button>
       </div>
 
       <motion.button
-        whileTap={{ scale: 0.97 }}
+        whileTap={{ scale: 0.98 }}
         onClick={onRetake}
-        className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-gray-500 border-2 border-gray-200 hover:border-pink-300 hover:text-pink-500 bg-white transition-all shadow-sm"
+        className="flex items-center justify-center gap-2 py-3 font-mono text-xs text-[#8a8070] border border-[#2a2a2a] hover:border-[#8a8070] hover:text-[#f5f0e8] transition-all tracking-widest"
       >
-        <RefreshCw className="w-4 h-4" />
-        {t("Дахин авах 😂", "Retake 😂")}
+        <RefreshCw className="w-3.5 h-3.5" />
+        {t("ДАХИН АВАХ", "RETAKE")}
       </motion.button>
     </motion.div>
   );

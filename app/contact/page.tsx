@@ -1,40 +1,32 @@
 import PageShell from "@/components/PageShell";
 
-export const metadata = { title: "Холбоо барих — Funny Photobooth MN" };
+export const metadata = { title: "Холбоо барих — Фото Буудал MN" };
 
 const contacts = [
-  { icon: "✉️", label: "И-мэйл", value: "hvslencoder@gmail.com", href: "mailto:hvslencoder@gmail.com" },
-  { icon: "📞", label: "Утас", value: "8836-3378", href: "tel:88363378" },
-  { icon: "📸", label: "Instagram", value: "@funnybooth.mn", href: "https://instagram.com/funnybooth.mn" },
-  { icon: "👤", label: "Facebook", value: "Funny Photobooth Mongolia", href: "https://facebook.com/funnyphotobooth.mn" },
+  { icon: "✉️", label: "И-МЭЙЛ / EMAIL", value: "hvslencoder@gmail.com", href: "mailto:hvslencoder@gmail.com" },
+  { icon: "📞", label: "УТАС / PHONE",  value: "8836-3378",               href: "tel:88363378" },
 ];
 
 export default function ContactPage() {
   return (
-    <PageShell title="Холбоо барих" emoji="📬">
-      <p className="text-gray-500 text-sm">
-        Асуулт, санал хүсэлт, хамтын ажиллагааны талаар доорх сувгуудаар холбогдоно уу.
+    <PageShell title="ХОЛБОО БАРИХ" emoji="📬">
+      <p className="font-mono text-xs text-[#8a8070] leading-relaxed">
+        Асуулт, санал хүсэлт, хамтын ажиллагааны талаар холбогдоно уу.
       </p>
-
       {contacts.map((c) => (
-        <a
-          key={c.label}
-          href={c.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-4 rounded-2xl p-5 border-2 border-purple-100 bg-white hover:border-pink-300 hover:shadow-md transition-all group"
+        <a key={c.label} href={c.href}
+          className="flex items-center gap-5 p-5 border border-[#2a2a2a] hover:border-[#d4a843] bg-[#111] hover:bg-[#161208] transition-all group"
         >
-          <span className="text-3xl">{c.icon}</span>
+          <span className="text-2xl">{c.icon}</span>
           <div>
-            <p className="text-gray-400 text-xs mb-0.5">{c.label}</p>
-            <p className="text-gray-800 font-bold group-hover:text-pink-500 transition-colors">{c.value}</p>
+            <p className="font-mono text-[9px] text-[#8a8070]/60 tracking-widest mb-1">{c.label}</p>
+            <p className="font-mono text-sm text-[#f5f0e8] group-hover:text-[#d4a843] transition-colors">{c.value}</p>
           </div>
         </a>
       ))}
-
-      <div className="rounded-2xl p-5 border-2 border-yellow-200 bg-yellow-50 mt-2">
-        <p className="text-yellow-700 text-sm leading-relaxed">
-          💡 Апп-тай холбоотой асуудал гарвал browser-ийн нэр болон алдааны дэлгэрэнгүйг и-мэйлд оруулж илгээнэ үү. Ажлын өдрүүдэд 24 цагийн дотор хариулна.
+      <div className="border border-[#d4a843]/20 bg-[#d4a843]/5 p-5 mt-2">
+        <p className="font-mono text-xs text-[#d4a843]/70 leading-relaxed">
+          ⚠ Апп-тай холбоотой асуудал гарвал browser-ийн нэр болон алдааны дэлгэрэнгүйг и-мэйлд оруулж илгээнэ үү. Ажлын өдрүүдэд 24 цагийн дотор хариулна.
         </p>
       </div>
     </PageShell>

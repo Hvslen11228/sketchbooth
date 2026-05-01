@@ -1,23 +1,22 @@
 import PageShell from "@/components/PageShell";
 
-export const metadata = { title: "Нууцлалын бодлого — Funny Photobooth MN" };
+export const metadata = { title: "Нууцлалын бодлого — Фото Буудал MN" };
 
 const sections = [
-  { title: "Мэдээлэл цуглуулах", body: "Бид таны хувийн мэдээллийг цуглуулдаггүй. Камераас авсан зураг нь зөвхөн таны төхөөрөмж дээр боловсруулагддаг бөгөөд манай сервер рүү илгээгддэггүй." },
-  { title: "Камер & Зураг", body: "Камерын эрхийг зөвхөн зураг авах зорилгоор ашигладаг. Зургийг хадгалах, дамжуулах, гуравдагч талд өгөхгүй. Бүх боловсруулалт таны browser дотор явагддаг (client-side only)." },
-  { title: "Cookie & Analytics", body: "Бид Google Analytics болон Google AdSense ашигладаг бөгөөд эдгээр нь хэрэглэгчийн зан төлөвийн анонимчилсан статистик мэдээлэл цуглуулдаг." },
-  { title: "Гуравдагч тал", body: "Google AdSense нь зар сурталчилгааг харуулахдаа cookie ашигладаг. Google-ийн нууцлалын бодлого: policies.google.com/privacy" },
-  { title: "Хүүхдийн мэдээлэл", body: "Энэ апп нь 13 хүртэлх насны хүүхдэд зориулагдаагүй. 13-аас доош настай бол эцэг эхийн зөвшөөрөлтэйгөөр ашиглана уу." },
-  { title: "Өөрчлөлт", body: "Нууцлалын бодлогод өөрчлөлт орвол энэ хуудсан дээр шинэчлэгдэнэ. Сүүлчийн шинэчлэл: 2025 оны 5 дугаар сар." },
+  { title: "МЭДЭЭЛЭЛ ЦУГЛУУЛАХ", body: "Бид таны хувийн мэдээллийг цуглуулдаггүй. Камераас авсан зураг нь зөвхөн таны төхөөрөмж дээр боловсруулагддаг бөгөөд манай сервер рүү илгээгддэггүй." },
+  { title: "КАМЕР & ЗУРАГ", body: "Камерын эрхийг зөвхөн зураг авах зорилгоор ашигладаг. Бүх боловсруулалт таны browser дотор явагддаг (client-side only)." },
+  { title: "COOKIE & ANALYTICS", body: "Бид Google AdSense ашигладаг бөгөөд энэ нь хэрэглэгчийн анонимчилсан статистик мэдээлэл цуглуулдаг. Cookie-г browser-ийн тохиргооноос хаах боломжтой." },
+  { title: "ХҮҮХДИЙН МЭДЭЭЛЭЛ", body: "Энэ апп нь 13 хүртэлх насны хүүхдэд зориулагдаагүй." },
+  { title: "СҮҮЛЧИЙН ШИНЭЧЛЭЛ", body: "2025 оны 5 дугаар сар." },
 ];
 
 export default function PrivacyPage() {
   return (
-    <PageShell title="Нууцлалын бодлого" emoji="🔒">
+    <PageShell title="НУУЦЛАЛЫН БОДЛОГО" emoji="🔒">
       {sections.map((s) => (
-        <div key={s.title} className="rounded-2xl p-5 border-2 border-purple-100 bg-white">
-          <h2 className="text-gray-800 font-bold text-lg mb-2">{s.title}</h2>
-          <p className="text-gray-500 text-sm leading-relaxed">{s.body}</p>
+        <div key={s.title} className="border border-[#2a2a2a] bg-[#111] p-5">
+          <h2 className="font-mono text-[10px] text-[#d4a843] tracking-widest mb-3">{s.title}</h2>
+          <p className="font-mono text-xs text-[#8a8070] leading-relaxed">{s.body}</p>
         </div>
       ))}
     </PageShell>

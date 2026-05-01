@@ -11,24 +11,22 @@ interface FiltersProps {
 export default function Filters({ selected, onChange, lang }: FiltersProps) {
   return (
     <div className="w-full">
-      <p className="text-gray-400 text-xs text-center mb-2 tracking-widest uppercase">
-        {lang === "mn" ? "Шүүлтүүр" : "Filter"}
+      <p className="font-mono text-[9px] text-[#8a8070] tracking-widest mb-3 text-center">
+        {lang === "mn" ? "ШҮҮЛТҮҮР / FILTER" : "FILTER"}
       </p>
-      <div className="flex gap-2 overflow-x-auto pb-1 justify-center flex-wrap">
+      <div className="flex gap-2 overflow-x-auto pb-1 justify-center flex-wrap" style={{ scrollbarWidth: "none" }}>
         {FILTERS.map((f) => (
           <motion.button
             key={f.id}
             whileTap={{ scale: 0.92 }}
-            whileHover={{ scale: 1.05 }}
             onClick={() => onChange(f.id)}
-            className={`flex-shrink-0 px-3 py-2 rounded-xl text-sm font-bold transition-all border-2 ${
+            className={`flex-shrink-0 px-3 py-2 text-xs font-mono tracking-wider transition-all border ${
               selected === f.id
-                ? "bg-purple-600 border-purple-400 text-white shadow-lg shadow-purple-500/40"
-                : "bg-white border-gray-200 text-gray-600 hover:border-purple-300"
+                ? "bg-[#d4a843] text-[#0d0d0d] border-[#d4a843]"
+                : "bg-[#111] text-[#8a8070] border-[#2a2a2a] hover:border-[#8a8070] hover:text-[#f5f0e8]"
             }`}
           >
-            <span className="mr-1">{f.emoji}</span>
-            {lang === "mn" ? f.label_mn : f.label_en}
+            {f.emoji} {lang === "mn" ? f.label_mn : f.label_en}
           </motion.button>
         ))}
       </div>
