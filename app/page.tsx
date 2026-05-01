@@ -34,10 +34,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="min-h-screen relative"
-      style={{ background: currentScene.bodyCSS }}
-    >
+    <div className="min-h-screen relative" style={{ background: currentScene.bodyCSS }}>
       {/* Dynamic scene overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-0 transition-all duration-700"
@@ -46,7 +43,7 @@ export default function Home() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
 
-        {/* ── Header ─────────────────────────────────────────── */}
+        {/* ── Header ─────────────────────────────────────── */}
         <header className="px-4 py-3 flex items-center justify-between border-b border-white/5">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -60,28 +57,31 @@ export default function Home() {
             </span>
           </motion.button>
 
-          <div className="flex items-center gap-3">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white text-sm font-bold transition-colors"
-            >
-              <Globe className="w-3.5 h-3.5" />
-              {lang === "mn" ? "MN" : "EN"}
-            </motion.button>
-          </div>
-
-          <div className="hidden md:block">
-            <AdComponent adSlot="1122334455" format="horizontal" className="w-40 opacity-60" />
-          </div>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white text-sm font-bold transition-colors"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            {lang === "mn" ? "MN" : "EN"}
+          </motion.button>
         </header>
 
-        {/* ── Scene picker — always visible at top ───────────── */}
-        <div className="px-4 pt-4">
-          <ScenePicker selected={scene} onChange={setScene} lang={lang} />
-        </div>
+        {/* ── Scene picker — зөвхөн home & camera дэлгэц дээр ── */}
+        <AnimatePresence>
+          {appState !== "result" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="px-4 pt-3 overflow-hidden"
+            >
+              <ScenePicker selected={scene} onChange={setScene} lang={lang} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* ── Main content ───────────────────────────────────── */}
+        {/* ── Main content ────────────────────────────────── */}
         <main className="flex-1 flex flex-col items-center justify-start px-4 py-6 gap-6">
           <AnimatePresence mode="wait">
 
@@ -103,8 +103,10 @@ export default function Home() {
                 </motion.div>
 
                 <div>
-                  <h1 className="text-5xl font-black text-white leading-tight"
-                    style={{ textShadow: "0 0 30px rgba(255,45,120,0.5)" }}>
+                  <h1
+                    className="text-5xl font-black text-white leading-tight"
+                    style={{ textShadow: "0 0 30px rgba(255,45,120,0.5)" }}
+                  >
                     Funny<br />
                     <span style={{ color: "#ff2d78" }}>Photobooth</span>
                   </h1>
@@ -120,7 +122,7 @@ export default function Home() {
                   )}
                 </p>
 
-                {/* Feature pills with icons */}
+                {/* Feature pills */}
                 <div className="flex flex-wrap gap-2 justify-center">
                   {[
                     { icon: "📸", text: t("4 зураг", "4 photos") },
@@ -147,7 +149,7 @@ export default function Home() {
                   className="relative w-full py-6 rounded-3xl font-black text-2xl text-white overflow-hidden"
                   style={{
                     background: "linear-gradient(135deg, #ff2d78, #a855f7, #06b6d4)",
-                    boxShadow: "0 0 30px rgba(255,45,120,0.4), 0 0 60px rgba(168,85,247,0.2)"
+                    boxShadow: "0 0 30px rgba(255,45,120,0.4), 0 0 60px rgba(168,85,247,0.2)",
                   }}
                 >
                   <motion.div
@@ -198,23 +200,22 @@ export default function Home() {
           </AnimatePresence>
         </main>
 
-        {/* ── Footer ─────────────────────────────────────────── */}
+        {/* ── Footer ──────────────────────────────────────── */}
         <footer className="py-5 px-4 border-t border-white/5">
           <div className="max-w-xl mx-auto flex flex-col items-center gap-3">
             <div className="flex items-center gap-5 text-xs text-white/30">
-              <Link href="/faq" className="hover:text-white/70 transition-colors flex items-center gap-1">
+              <Link href="/faq" className="hover:text-white/70 transition-colors">
                 ❓ {t("Асуулт", "FAQ")}
               </Link>
-              <Link href="/contact" className="hover:text-white/70 transition-colors flex items-center gap-1">
+              <Link href="/contact" className="hover:text-white/70 transition-colors">
                 📬 {t("Холбоо барих", "Contact")}
               </Link>
-              <Link href="/privacy" className="hover:text-white/70 transition-colors flex items-center gap-1">
+              <Link href="/privacy" className="hover:text-white/70 transition-colors">
                 🔒 {t("Нууцлал", "Privacy")}
               </Link>
             </div>
             <p className="text-white/15 text-xs">
-              © 2025 FunnyBooth MN •{" "}
-              {t("Монголын хамгийн хөгжилтэй photo booth", "Mongolia's funniest photobooth")}
+              © 2025 FunnyBooth MN
             </p>
           </div>
         </footer>

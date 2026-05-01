@@ -69,9 +69,8 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
 
   const handleShare = async () => {
     const shareText = lang === "mn"
-      ? `Funny Photobooth Mongolia-д зураг авлаа! 📸🔥 ${result?.caption ?? ""}\n\nТа ч авж үзээрэй 👉 funnyphotobooth.mn`
-      : `Just took photos at Funny Photobooth Mongolia! 📸🔥 ${result?.caption ?? ""}\n\nTry it 👉 funnyphotobooth.mn`;
-
+      ? `Funny Photobooth Mongolia-д зураг авлаа! 📸🔥\n\nТа ч авж үзээрэй 👉 funnyphotobooth.mn`
+      : `Just took photos at Funny Photobooth Mongolia! 📸🔥\n\nTry it 👉 funnyphotobooth.mn`;
     if (navigator.share && stripUrl) {
       try {
         const res  = await fetch(stripUrl);
@@ -97,45 +96,15 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-xl mx-auto flex flex-col gap-5"
     >
-      {/* Ad — result screen only */}
+      {/* Ad */}
       <AdComponent adSlot="0987654321" format="horizontal" className="opacity-60" />
 
-      {/* Mood card — icon + label */}
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.1, type: "spring" }}
-        className="flex items-center gap-4 rounded-2xl px-5 py-4 border border-white/10"
-        style={{ background: "rgba(255,255,255,0.04)" }}
-      >
-        <motion.span
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ repeat: Infinity, duration: 1.8 }}
-          className="text-4xl flex-shrink-0"
-        >
-          {result.mood.emoji}
-        </motion.span>
-        <div>
-          <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5">
-            {t("Өнөөдрийн байдал", "Today's Mood")}
-          </p>
-          <p className="text-white font-black text-base">
-            {lang === "mn" ? result.mood.label_mn : result.mood.label_en}
-          </p>
-        </div>
-      </motion.div>
-
-      {/* Caption */}
-      <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-2xl px-4 py-3">
-        <p className="text-yellow-300 font-black text-center text-lg">{result.caption}</p>
-      </div>
-
-      {/* Frame picker */}
+      {/* 1. Frame picker — хамгийн дээр */}
       <div className="rounded-2xl p-4 border border-white/10 bg-white/3">
         <FramePicker selected={frame} onChange={handleFrameChange} lang={lang} />
       </div>
 
-      {/* Sticker toggle */}
+      {/* 2. Sticker toggle */}
       <div className="flex items-center justify-center gap-3">
         <Sticker className="w-4 h-4 text-white/40" />
         <p className="text-white/50 text-sm">{t("Стикер", "Stickers")}</p>
@@ -152,10 +121,10 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
         </motion.button>
       </div>
 
-      {/* Strip preview */}
+      {/* 3. Strip preview */}
       <div className="relative rounded-2xl overflow-hidden">
         {generating && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 gap-3 rounded-2xl">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10 rounded-2xl">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
@@ -167,7 +136,7 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
         <PhotoStrip photos={photos} stripUrl={stripUrl} lang={lang} />
       </div>
 
-      {/* Action buttons */}
+      {/* 4. Action buttons */}
       <div className="grid grid-cols-2 gap-3">
         <motion.button
           whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}
@@ -201,7 +170,7 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
         className="flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-white/60 border border-white/10 hover:border-white/30 hover:text-white transition-all"
       >
         <RefreshCw className="w-4 h-4" />
-        {t("Дахин авах 😂", "Retake until perfect 😂")}
+        {t("Дахин авах 😂", "Retake 😂")}
       </motion.button>
     </motion.div>
   );
