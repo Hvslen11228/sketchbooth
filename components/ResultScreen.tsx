@@ -27,12 +27,10 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
 
   const t = useCallback((mn: string, en: string) => lang === "mn" ? mn : en, [lang]);
 
-  // Build strip whenever frame / stickers change
   const buildStrip = useCallback(async (r: FunnyResult, frameId: FrameId, withStickers: boolean) => {
     setGenerating(true);
     const url = await generateStrip({
-      photos,
-      filterCSS,
+      photos, filterCSS,
       frame: getFrameById(frameId),
       showStickers: withStickers,
       stickers,
@@ -43,7 +41,6 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
     setGenerating(false);
   }, [photos, filterCSS, stickers, lang]);
 
-  // Initial generation
   useEffect(() => {
     const r = getRandomResult(lang);
     setResult(r);
@@ -51,13 +48,11 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Rebuild when frame changes
   const handleFrameChange = (id: FrameId) => {
     setFrame(id);
     if (result) buildStrip(result, id, showStickers);
   };
 
-  // Rebuild when sticker toggle changes
   const handleStickerToggle = () => {
     const next = !showStickers;
     setShowStickers(next);
@@ -105,62 +100,12 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
       {/* Ad — result screen only */}
       <AdComponent adSlot="0987654321" format="horizontal" className="opacity-60" />
 
-      {/* Funny result card */}
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.1, type: "spring" }}
-        className="rounded-3xl p-5 border border-white/10"
-        style={{ background: "linear-gradient(135deg, #1a0a2e88, #0d111788)" }}
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <motion.span
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-4xl"
-          >
-            {result.mood.emoji}
-          </motion.span>
-          <div>
-            <p className="text-white/40 text-xs uppercase tracking-widest">
-              {t("Өнөөдрийн байдал", "Today's Mood")}
-            </p>
-            <p className="text-white font-black text-lg">
-              {lang === "mn" ? result.mood.label_mn : result.mood.label_en}
-            </p>
-          </div>
-        </div>
+      {/* Caption only */}
+      <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-2xl px-4 py-3">
+        <p className="text-yellow-300 font-black text-center text-lg">{result.caption}</p>
+      </div>
 
-        <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-2xl px-4 py-3 mb-4">
-          <p className="text-yellow-300 font-black text-center text-lg">{result.caption}</p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: t("Гоо үзэсгэлэн", "Beauty"),  value: result.beautyScore, color: "#ff2d78", max: 100 },
-            { label: t("Крейнж", "Cringe"),           value: result.cringeScore, color: "#facc15", max: 150 },
-            { label: t("Вирал", "Viral"),             value: result.viralScore,  color: "#06b6d4", max: 100 },
-          ].map((s) => (
-            <div key={s.label} className="text-center">
-              <p className="text-white/40 text-xs mb-1">{s.label}</p>
-              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden mb-1">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.min((s.value / s.max) * 100, 100)}%` }}
-                  transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-                  className="h-full rounded-full"
-                  style={{ background: s.color }}
-                />
-              </div>
-              <p className="font-black text-sm" style={{ color: s.color }}>
-                {s.value}{s.label === t("Крейнж", "Cringe") && s.value > 100 ? "% 💀" : "%"}
-              </p>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* ── Frame picker ── */}
+      {/* Frame picker */}
       <div className="rounded-2xl p-4 border border-white/10 bg-white/3">
         <FramePicker selected={frame} onChange={handleFrameChange} lang={lang} />
       </div>
@@ -192,25 +137,10 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Resu
               className="w-10 h-10 border-4 border-t-transparent rounded-full"
               style={{ borderColor: `${currentFrame.accentColor}60`, borderTopColor: currentFrame.accentColor }}
             />
-            <p className="text-white/60 text-sm">{t("Хүрээ тохируулж байна...", "Applying frame...")}</p>
           </div>
         )}
         <PhotoStrip photos={photos} stripUrl={stripUrl} lang={lang} />
       </div>
-
-      {/* TikTok hint */}
-      <motion.div
-        animate={{ scale: [1, 1.02, 1] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="text-center p-4 rounded-2xl border border-cyan-500/30 bg-cyan-500/5"
-      >
-        <p className="text-cyan-400 font-bold text-sm">
-          🎵 {t("TikTok Story-даа хуваалц!", "Share to your TikTok Story!")}
-        </p>
-        <p className="text-white/30 text-xs mt-1">
-          {t("\"Retake until perfect\" 😂", "\"Retake until perfect\" challenge 😂")}
-        </p>
-      </motion.div>
 
       {/* Action buttons */}
       <div className="grid grid-cols-2 gap-3">
