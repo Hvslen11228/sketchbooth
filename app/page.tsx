@@ -28,7 +28,7 @@ export default function Home() {
 
       {/* Navbar */}
       <header className="border-b border-gray-100 sticky top-0 bg-white z-20">
-        <div className="max-w-2xl mx-auto px-4 h-14 grid grid-cols-3 items-center">
+        <div className="max-w-lg mx-auto px-4 h-14 grid grid-cols-3 items-center">
           {/* Left — nav links */}
           <div className="flex items-center gap-4">
             <Link href="/faq" className="text-sm text-gray-500 hover:text-gray-900">FAQ</Link>
@@ -52,7 +52,7 @@ export default function Home() {
 
       {/* Content */}
       <main className="flex-1 flex flex-col items-center w-full px-4 py-8">
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-lg mx-auto">
         <AnimatePresence mode="wait">
 
           {/* Home */}
@@ -126,7 +126,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-4">
-        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between">
+        <div className="max-w-lg mx-auto px-4 flex items-center justify-between">
           <div className="flex gap-4">
             <Link href="/faq" className="text-sm text-gray-400 hover:text-gray-600">FAQ</Link>
             <Link href="/contact" className="text-sm text-gray-400 hover:text-gray-600">Холбоо барих</Link>
