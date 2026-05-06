@@ -35,8 +35,24 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Prop
 
   const download = async () => {
     if (!stripUrl) return;
+
+    // iOS Safari: Web Share API with file is the only reliable way
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile && navigator.share) {
+      try {
+        const res = await fetch(stripUrl);
+        const blob = await res.blob();
+        const file = new File([blob], `sketchbooth-${Date.now()}.png`, { type: "image/png" });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: "Sketch Booth" });
+          return;
+        }
+      } catch { /* fallthrough */ }
+    }
+
+    // Desktop + Android Chrome: blob URL download
     try {
-      // Convert data URL to blob for better mobile support
       const res = await fetch(stripUrl);
       const blob = await res.blob();
       const blobUrl = URL.createObjectURL(blob);
@@ -45,19 +61,28 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Prop
       a.download = `sketchbooth-${Date.now()}.png`;
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 500);
     } catch {
-      // Fallback: open in new tab (works on iOS Safari)
+      // Last resort: open data URL in new tab (user long-press saves on iOS)
       window.open(stripUrl, "_blank");
     }
   };
   const share = async () => {
     const text = "Sketch Booth-д зураг авлаа! 📸 👉 sketchbooth.mn";
     if (navigator.share && stripUrl) {
-      try { const blob = await (await fetch(stripUrl)).blob(); await navigator.share({ title: "Sketch Booth", text, files: [new File([blob], "strip.png", { type: "image/png" })] }); return; } catch { /**/ }
+      try {
+        const blob = await (await fetch(stripUrl)).blob();
+        const file = new File([blob], "sketchbooth.png", { type: "image/png" });
+        await navigator.share({ title: "Sketch Booth", text, files: [file] });
+        return;
+      } catch { /* fallback */ }
     }
-    await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2500); download();
+    // Desktop fallback: copy link text
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch { /**/ }
   };
 
   if (!result) return null;

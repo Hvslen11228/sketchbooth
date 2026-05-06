@@ -92,7 +92,10 @@ export default function Camera({ lang, onComplete }: CameraProps) {
   return (
     <div className="flex flex-col items-center gap-5 w-full max-w-2xl mx-auto">
       {/* ── Video preview ───────────────────────────────────── */}
-      <div className="relative w-full overflow-hidden bg-black border border-gray-200 rounded-xl" style={{ aspectRatio: "4/3", minHeight: 240 }}>
+      <div
+        className="relative w-full overflow-hidden bg-black rounded-xl"
+        style={{ height: "min(70vw, 420px)", minHeight: 280 }}
+      >
         {/* Live video — mirrored for natural selfie */}
         <video
           ref={videoRef}
