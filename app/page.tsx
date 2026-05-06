@@ -5,303 +5,129 @@ import Link from "next/link";
 import Camera from "@/components/Camera";
 import ResultScreen from "@/components/ResultScreen";
 
-type AppState = "home" | "camera" | "result";
-
-// Film sprocket strip decoration
-function FilmStrip({ vertical = false }: { vertical?: boolean }) {
-  const holes = Array.from({ length: vertical ? 12 : 8 });
-  return (
-    <div className={`flex ${vertical ? "flex-col" : "flex-row"} gap-3 items-center`}>
-      {holes.map((_, i) => (
-        <div key={i} className="sprocket flex-shrink-0" />
-      ))}
-    </div>
-  );
-}
+type Page = "home" | "camera" | "result";
 
 export default function Home() {
-  const [appState, setAppState] = useState<AppState>("home");
+  const [page, setPage] = useState<Page>("home");
   const [lang, setLang] = useState<"mn" | "en">("mn");
-  const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
-  const [capturedFilter, setCapturedFilter] = useState<string>("none");
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [filter, setFilter] = useState("none");
 
   const t = (mn: string, en: string) => lang === "mn" ? mn : en;
 
-  const handlePhotosComplete = useCallback((photos: string[], filter: string) => {
-    setCapturedPhotos(photos);
-    setCapturedFilter(filter);
-    setAppState("result");
+  const onComplete = useCallback((p: string[], f: string) => {
+    setPhotos(p); setFilter(f); setPage("result");
   }, []);
 
-  const handleRetake = useCallback(() => {
-    setCapturedPhotos([]);
-    setCapturedFilter("none");
-    setAppState("camera");
+  const onRetake = useCallback(() => {
+    setPhotos([]); setFilter("none"); setPage("camera");
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d] flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
 
-      {/* ── NAVBAR ─────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-30 bg-[#0d0d0d] border-b border-[#1e1e1e]">
-
-        {/* Film rail */}
-        <div className="bg-[#1a1a1a] border-b border-[#2a2a2a] px-6 py-1.5 flex items-center justify-between">
-          <FilmStrip />
-          <span className="font-mono text-[9px] text-[#8a8070]/30 tracking-[0.35em]">SKETCH BOOTH MN</span>
-          <FilmStrip />
-        </div>
-
-        {/* 3-column: nav | logo | lang+cta */}
-        <div className="grid grid-cols-3 items-center px-6 h-16">
-
-          {/* Left — nav links */}
-          <nav className="flex items-center gap-0">
-            {[
-              { href: "/faq",     mn: "АСУУЛТ",  en: "FAQ" },
-              { href: "/contact", mn: "ХОЛБОО",  en: "CONTACT" },
-              { href: "/privacy", mn: "НУУЦЛАЛ", en: "PRIVACY" },
-            ].map((l, i) => (
-              <span key={l.href} className="flex items-center">
-                <Link
-                  href={l.href}
-                  className="font-mono text-[10px] tracking-[0.18em] text-[#8a8070] hover:text-[#d4a843] transition-colors px-3 py-1.5"
-                >
-                  {lang === "mn" ? l.mn : l.en}
-                </Link>
-                {i < 2 && <span className="text-[#2a2a2a] text-xs select-none">·</span>}
-              </span>
-            ))}
-          </nav>
-
-          {/* Center — logo */}
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setAppState("home")}
-            className="flex flex-col items-center justify-center"
-          >
-            <div className="font-display leading-[0.88] text-center tracking-wide">
-              <div className="text-[28px] md:text-[36px] text-[#f5f0e8]">SKETCH</div>
-              <div className="text-[28px] md:text-[36px] film-shimmer">BOOTH</div>
-            </div>
-          </motion.button>
-
-          {/* Right — lang + start */}
-          <div className="flex items-center justify-end gap-2">
+      {/* Navbar */}
+      <header className="border-b border-gray-100 sticky top-0 bg-white z-20">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+          <button onClick={() => setPage("home")} className="font-bold text-lg text-gray-900">
+            Sketch Booth
+          </button>
+          <div className="flex items-center gap-3">
+            <Link href="/faq" className="text-sm text-gray-500 hover:text-gray-900">FAQ</Link>
+            <Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">Холбоо</Link>
             <button
               onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
-              className="font-mono text-[10px] tracking-widest text-[#8a8070] hover:text-[#d4a843] border border-[#2a2a2a] hover:border-[#d4a843] px-3 py-1.5 transition-all"
+              className="text-sm text-gray-400 hover:text-gray-900 border border-gray-200 px-2 py-0.5 rounded"
             >
               {lang === "mn" ? "EN" : "МН"}
             </button>
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              onClick={() => setAppState("camera")}
-              className="font-mono text-[10px] tracking-[0.18em] bg-[#d4a843] text-[#0d0d0d] px-4 py-2 hover:bg-[#f0c060] transition-colors font-bold"
-            >
-              {t("ЭХЛЭХ ↗", "START ↗")}
-            </motion.button>
           </div>
         </div>
       </header>
 
-      {/* ── MAIN CONTENT ──────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col">
+      {/* Content */}
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
         <AnimatePresence mode="wait">
 
-          {/* HOME */}
-          {appState === "home" && (
-            <motion.div
-              key="home"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex-1 grid md:grid-cols-[1fr_auto_1fr] gap-0"
+          {/* Home */}
+          {page === "home" && (
+            <motion.div key="home"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="flex flex-col items-center text-center gap-8 pt-8"
             >
-              {/* Left panel */}
-              <div className="p-6 md:p-10 flex flex-col justify-between border-r border-[#1e1e1e]">
-                {/* Feature list */}
-                <div className="space-y-4 mt-4">
-                  {[
-                    { num: "01", text: t("3 секундын countdown", "3-second countdown") },
-                    { num: "02", text: t("4 зураг автоматаар", "4 automatic captures") },
-                    { num: "03", text: t("6 filter сонголт", "6 filter options") },
-                    { num: "04", text: t("10 хүрээний загвар", "10 frame styles") },
-                    { num: "05", text: t("Emoji стикер overlay", "Emoji sticker overlay") },
-                    { num: "06", text: t("PNG татах & share", "PNG download & share") },
-                  ].map((f, i) => (
-                    <motion.div
-                      key={f.num}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.07 }}
-                      className="flex items-center gap-4 group"
-                    >
-                      <span className="font-mono text-[10px] text-[#d4a843]/60 w-6 flex-shrink-0">{f.num}</span>
-                      <div className="h-px w-6 bg-[#2a2a2a] group-hover:w-10 group-hover:bg-[#d4a843]/40 transition-all duration-300" />
-                      <span className="font-mono text-xs text-[#8a8070] group-hover:text-[#f5f0e8] transition-colors">{f.text}</span>
-                    </motion.div>
-                  ))}
-                </div>
+              <div className="text-7xl">📸</div>
 
-                {/* ISO badge */}
-                <div className="mt-8 inline-flex items-center gap-2 border border-[#2a2a2a] px-3 py-1.5 self-start">
-                  <div className="w-2 h-2 rounded-full bg-[#d4a843] animate-pulse" />
-                  <span className="font-mono text-[10px] text-[#8a8070]">ISO 400 • FREE</span>
-                </div>
-              </div>
-
-              {/* Center — big CTA */}
-              <div className="flex flex-col items-center justify-center p-8 gap-8 relative">
-                {/* Vertical film strip left */}
-                <div className="hidden md:block absolute left-0 top-0 bottom-0 bg-[#1a1a1a] w-5 flex flex-col items-center justify-center py-4 gap-3">
-                  <FilmStrip vertical />
-                </div>
-                <div className="hidden md:block absolute right-0 top-0 bottom-0 bg-[#1a1a1a] w-5 flex flex-col items-center justify-center py-4 gap-3">
-                  <FilmStrip vertical />
-                </div>
-
-                {/* Camera icon */}
-                <motion.div
-                  animate={{ scale: [1, 1.04, 1] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                  className="relative"
-                >
-                  <div className="w-28 h-28 rounded-2xl bg-[#1a1a1a] border-2 border-[#2a2a2a] flex items-center justify-center text-6xl shadow-2xl">
-                    📸
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#c0392b] animate-pulse" />
-                </motion.div>
-
-                {/* Main CTA button */}
-                <motion.button
-                  whileTap={{ scale: 0.96 }}
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => setAppState("camera")}
-                  className="relative overflow-hidden w-full max-w-[200px]"
-                >
-                  <div className="bg-[#d4a843] text-[#0d0d0d] font-display text-3xl py-4 px-8 w-full text-center tracking-wider hover:bg-[#f0c060] transition-colors">
-                    {t("ЭХЛЭХ", "START")}
-                  </div>
-                  {/* Shimmer */}
-                  <motion.div
-                    animate={{ x: ["-100%", "200%"] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 pointer-events-none"
-                  />
-                </motion.button>
-
-                <p className="font-mono text-[10px] text-[#8a8070]/60 text-center max-w-[160px] leading-relaxed">
-                  {t("КАМЕРЫН ЗӨВШӨӨРӨЛ ШААРДЛАГАТАЙ", "CAMERA PERMISSION REQUIRED")}
+              <div>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">Sketch Booth</h1>
+                <p className="text-gray-500 text-lg">
+                  {t("4 зураг аваад, strip болгоод, найздаа share хий!", "Take 4 photos, make a strip, share it!")}
                 </p>
               </div>
 
-              {/* Right panel — exposure sheet aesthetic */}
-              <div className="p-6 md:p-10 border-l border-[#1e1e1e] hidden md:flex flex-col justify-between">
-                <div className="space-y-6">
-                  <div>
-                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ОГНОО / DATE</p>
-                    <p className="font-mono text-xs text-[#8a8070]">{new Date().toLocaleDateString("mn-MN")}</p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ФОРМАТ / FORMAT</p>
-                    <p className="font-mono text-xs text-[#8a8070]">4×1 STRIP • PNG</p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ЗУРГИЙН ТОО / FRAMES</p>
-                    <div className="flex gap-2 mt-1">
-                      {[1,2,3,4].map(n => (
-                        <div key={n} className="w-8 h-10 border border-[#2a2a2a] flex items-center justify-center">
-                          <span className="font-mono text-[9px] text-[#8a8070]">{n}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ХУРД / SPEED</p>
-                    <p className="font-mono text-xs text-[#8a8070]">1/125s • f/2.8</p>
-                  </div>
-                </div>
-
-                {/* Decorative exposure gradient */}
-                <div className="mt-4">
-                  <p className="font-mono text-[9px] text-[#8a8070]/40 tracking-widest mb-2">EXPOSURE</p>
-                  <div className="flex gap-0.5">
-                    {Array.from({length: 16}).map((_, i) => (
-                      <div key={i} className="h-6 flex-1 rounded-sm"
-                        style={{ background: `rgba(212,168,67,${i/16 * 0.8})` }} />
-                    ))}
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[
+                  t("📸 4 зураг", "📸 4 photos"),
+                  t("🎨 6 filter", "🎨 6 filters"),
+                  t("🖼️ 20 frame", "🖼️ 20 frames"),
+                  t("🎭 Стикер", "🎭 Stickers"),
+                  t("📥 PNG татах", "📥 Download"),
+                  t("✨ Үнэгүй", "✨ Free"),
+                ].map(f => (
+                  <span key={f} className="bg-gray-50 border border-gray-200 text-gray-600 text-sm px-3 py-1 rounded-full">{f}</span>
+                ))}
               </div>
+
+              <button
+                onClick={() => setPage("camera")}
+                className="bg-gray-900 text-white text-lg font-semibold px-10 py-4 rounded-2xl hover:bg-gray-700 transition-colors w-full max-w-xs"
+              >
+                {t("Эхлэх", "Start")} →
+              </button>
+
+              <p className="text-gray-400 text-sm">{t("Камерын зөвшөөрөл шаардлагатай", "Camera permission required")}</p>
             </motion.div>
           )}
 
-          {/* CAMERA */}
-          {appState === "camera" && (
-            <motion.div
-              key="camera"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col items-center justify-start px-4 py-6"
+          {/* Camera */}
+          {page === "camera" && (
+            <motion.div key="camera"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             >
-              <Camera lang={lang} onComplete={handlePhotosComplete} />
+              <div className="flex items-center gap-2 mb-6">
+                <button onClick={() => setPage("home")} className="text-gray-400 hover:text-gray-900 text-sm">← {t("Буцах", "Back")}</button>
+                <div className="h-4 w-px bg-gray-200" />
+                <span className="text-sm text-gray-500">{t("Зураг авах", "Capture")}</span>
+              </div>
+              <Camera lang={lang} onComplete={onComplete} />
             </motion.div>
           )}
 
-          {/* RESULT */}
-          {appState === "result" && (
-            <motion.div
-              key="result"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col items-center justify-start px-4 py-6"
+          {/* Result */}
+          {page === "result" && (
+            <motion.div key="result"
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             >
-              <ResultScreen
-                photos={capturedPhotos}
-                filterCSS={capturedFilter}
-                lang={lang}
-                onRetake={handleRetake}
-              />
+              <div className="flex items-center gap-2 mb-6">
+                <span className="text-sm font-medium text-gray-900">{t("Таны зургийн хэсэг", "Your photo strip")}</span>
+              </div>
+              <ResultScreen photos={photos} filterCSS={filter} lang={lang} onRetake={onRetake} />
             </motion.div>
           )}
 
         </AnimatePresence>
       </main>
 
-      {/* ── BOTTOM FILM RAIL + FOOTER ──────────────────────────── */}
-      <div className="border-t border-[#1e1e1e]">
-        {/* Footer links */}
-        <div className="px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            {[
-              { href: "/faq",     label: t("АСУУЛТ", "FAQ") },
-              { href: "/contact", label: t("ХОЛБОО", "CONTACT") },
-              { href: "/privacy", label: t("НУУЦЛАЛ", "PRIVACY") },
-            ].map((l, i) => (
-              <span key={l.href} className="flex items-center">
-                <Link
-                  href={l.href}
-                  className="font-mono text-[11px] text-[#8a8070] hover:text-[#d4a843] transition-colors tracking-widest px-3 py-1"
-                >
-                  {l.label}
-                </Link>
-                {i < 2 && <span className="text-[#2a2a2a] text-xs">·</span>}
-              </span>
-            ))}
+      {/* Footer */}
+      <footer className="border-t border-gray-100 py-4">
+        <div className="max-w-2xl mx-auto px-4 flex items-center justify-between">
+          <div className="flex gap-4">
+            <Link href="/faq" className="text-sm text-gray-400 hover:text-gray-600">FAQ</Link>
+            <Link href="/contact" className="text-sm text-gray-400 hover:text-gray-600">Холбоо барих</Link>
+            <Link href="/privacy" className="text-sm text-gray-400 hover:text-gray-600">Нууцлал</Link>
           </div>
-          <span className="font-mono text-[10px] text-[#8a8070]/40">© 2025</span>
+          <span className="text-sm text-gray-300">© 2025</span>
         </div>
-
-        {/* Bottom film strip */}
-        <div className="bg-[#1a1a1a] border-t border-[#2a2a2a] px-6 py-2 flex items-center justify-between">
-          <FilmStrip />
-          <span className="font-mono text-[9px] text-[#8a8070]/30 tracking-widest">SKETCH BOOTH MN</span>
-          <FilmStrip />
-        </div>
-      </div>
+      </footer>
     </div>
   );
 }

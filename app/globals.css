@@ -1,92 +1,23 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
-
-:root {
-  --ink:     #0d0d0d;
-  --paper:   #f5f0e8;
-  --gold:    #d4a843;
-  --gold2:   #f0c060;
-  --red:     #c0392b;
-  --muted:   #8a8070;
-  --border:  #2a2a2a;
-}
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--ink);
-  color: var(--paper);
-  min-height: 100vh;
-}
-
-/* Grain overlay on everything */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
-}
-
-.font-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.04em; }
-.font-mono    { font-family: 'Space Mono', monospace; }
-
-/* Scanline effect for retro feel */
-.scanlines::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.03) 2px,
-    rgba(0,0,0,0.03) 4px
-  );
-  pointer-events: none;
-}
-
-/* Film border shimmer */
-@keyframes filmShimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-.film-shimmer {
-  background: linear-gradient(90deg, var(--gold) 0%, var(--gold2) 40%, var(--gold) 100%);
-  background-size: 200% auto;
-  animation: filmShimmer 3s linear infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  background: #ffffff;
+  color: #111;
 }
 
 @keyframes shutterFlash {
-  0%   { opacity: 0; }
-  15%  { opacity: 1; }
-  100% { opacity: 0; }
+  0%,100%{opacity:0} 15%{opacity:1}
 }
-.shutter-flash { animation: shutterFlash 0.45s ease-out forwards; }
+.shutter-flash { animation: shutterFlash 0.4s ease-out forwards; }
 
 @keyframes pulseRing {
-  0%   { transform: scale(0.85); opacity: 1; }
-  100% { transform: scale(1.9); opacity: 0; }
+  0%{transform:scale(0.85);opacity:1} 100%{transform:scale(1.9);opacity:0}
 }
 .pulse-ring { animation: pulseRing 1s ease-out infinite; }
 
-/* Sprocket holes decoration */
-.sprocket {
-  width: 14px; height: 14px;
-  border-radius: 3px;
-  background: var(--ink);
-  border: 1.5px solid #333;
-}
-
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--ink); }
-::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
