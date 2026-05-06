@@ -92,7 +92,7 @@ export default function Camera({ lang, onComplete }: CameraProps) {
   return (
     <div className="flex flex-col items-center gap-5 w-full max-w-2xl mx-auto">
       {/* ── Video preview ───────────────────────────────────── */}
-      <div className="relative w-full rounded-2xl overflow-hidden bg-black aspect-video border-2 border-purple-500/40 shadow-2xl shadow-purple-900/40">
+      <div className="relative w-full overflow-hidden bg-black border border-gray-200 rounded-xl" style={{ aspectRatio: "4/3", minHeight: 240 }}>
         {/* Live video — mirrored for natural selfie */}
         <video
           ref={videoRef}
@@ -108,23 +108,21 @@ export default function Camera({ lang, onComplete }: CameraProps) {
 
         {/* Loading / error states */}
         {state === "requesting" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white text-lg font-bold">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80 text-white text-base">
             <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-              className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full mr-3"
+              className="w-8 h-8 border-2 border-white border-t-transparent rounded-full mr-3"
             />
-            {t("Камер нээж байна...", "Opening camera...")}
+            Камер нээж байна...
           </div>
         )}
         {state === "error" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-center p-6 gap-4">
-            <span className="text-5xl">😢</span>
-            <p className="text-red-400 font-bold text-lg">{error}</p>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={startCamera}
-              className="px-6 py-3 bg-purple-600 rounded-2xl font-bold text-white"
+            <span className="text-4xl">😢</span>
+            <p className="text-red-400 text-sm">{error}</p>
+            <motion.button whileTap={{ scale: 0.95 }} onClick={startCamera}
+              className="px-5 py-2.5 bg-white text-black rounded-xl text-sm font-medium"
             >
-              {t("Дахин оролдох", "Try Again")}
+              Дахин оролдох
             </motion.button>
           </div>
         )}
@@ -147,9 +145,9 @@ export default function Camera({ lang, onComplete }: CameraProps) {
 
         {/* Progress bar while shooting */}
         {shooting && (
-          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/10">
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
             <motion.div
-              className="h-full bg-gradient-to-r from-pink-500 to-purple-500"
+              className="h-full bg-white"
               animate={{ width: `${(photos.length / TOTAL_PHOTOS) * 100}%` }}
               transition={{ duration: 0.4 }}
             />
@@ -162,8 +160,8 @@ export default function Camera({ lang, onComplete }: CameraProps) {
             {Array.from({ length: TOTAL_PHOTOS }).map((_, i) => (
               <div
                 key={i}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  i < photos.length ? "bg-pink-500 shadow-lg shadow-pink-500/60" : "bg-white/20"
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  i < photos.length ? "bg-white" : "bg-white/30"
                 }`}
               />
             ))}
@@ -186,7 +184,7 @@ export default function Camera({ lang, onComplete }: CameraProps) {
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: i * 0.05, type: "spring" }}
-              className="w-16 h-12 object-cover rounded-xl border-2 border-pink-500/60 shadow-lg"
+              className="w-16 h-12 object-cover rounded-lg border border-gray-200"
               style={{ transform: "scaleX(-1)" }}
             />
           ))}
@@ -201,25 +199,19 @@ export default function Camera({ lang, onComplete }: CameraProps) {
       {/* ── Start button ────────────────────────────────────── */}
       {!shooting && state === "active" && (
         <motion.button
-          whileTap={{ scale: 0.95 }}
-          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.01 }}
           onClick={startShooting}
-          className="relative w-full max-w-xs py-5 rounded-3xl font-black text-xl text-white glow-pink overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #ff2d78, #a855f7)" }}
+          className="w-full py-4 rounded-xl font-semibold text-white text-base"
+          style={{ background: "#1a1a1a", fontSize: 14, letterSpacing: "0.06em" }}
         >
-          <motion.div
-            animate={{ x: ["0%", "100%"] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
-          />
-          📸 {t("Зураг авах", "Start Shoot")}
+          📸 Зураг авах
         </motion.button>
       )}
 
-      {/* Tip text */}
       {!shooting && state === "active" && (
-        <p className="text-white/30 text-xs text-center">
-          {t(`${TOTAL_PHOTOS} зураг автоматаар авна`, `${TOTAL_PHOTOS} photos will be taken automatically`)}
+        <p style={{ fontSize: 11, color: "#bbb", textAlign: "center", letterSpacing: "0.04em" }}>
+          {TOTAL_PHOTOS} зураг автоматаар авна
         </p>
       )}
     </div>

@@ -33,9 +33,24 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Prop
   const onFrameChange = (id: FrameId) => { setFrame(id); if (result) build(result, id, showStickers); };
   const onStickerToggle = () => { const n = !showStickers; setShowStickers(n); if (result) build(result, frame, n); };
 
-  const download = () => {
+  const download = async () => {
     if (!stripUrl) return;
-    const a = document.createElement("a"); a.href = stripUrl; a.download = `sketchbooth-${Date.now()}.png`; a.click();
+    try {
+      // Convert data URL to blob for better mobile support
+      const res = await fetch(stripUrl);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `sketchbooth-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch {
+      // Fallback: open in new tab (works on iOS Safari)
+      window.open(stripUrl, "_blank");
+    }
   };
   const share = async () => {
     const text = "Sketch Booth-д зураг авлаа! 📸 👉 sketchbooth.mn";
