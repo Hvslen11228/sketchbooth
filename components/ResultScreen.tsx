@@ -3,7 +3,6 @@ import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, RefreshCw, Share2 } from "lucide-react";
 import PhotoStrip from "./PhotoStrip";
-import AdComponent from "./AdComponent";
 import FramePicker from "./FramePicker";
 import { generateStrip } from "@/utils/generateStrip";
 import { getRandomResult, getRandomStickers, FunnyResult } from "@/utils/randomCaption";
@@ -20,19 +19,14 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Prop
   const [generating, setGenerating] = useState(true);
   const [copied, setCopied] = useState(false);
 
-  const t = useCallback((mn: string, en: string) => lang === "mn" ? mn : en, [lang]);
-
   const build = useCallback(async (r: FunnyResult, fid: FrameId, stk: boolean) => {
     setGenerating(true);
     const url = await generateStrip({ photos, filterCSS, frame: getFrameById(fid), showStickers: stk, stickers, caption: r.caption, lang });
-    setStripUrl(url);
-    setGenerating(false);
+    setStripUrl(url); setGenerating(false);
   }, [photos, filterCSS, stickers, lang]);
 
   useEffect(() => {
-    const r = getRandomResult(lang);
-    setResult(r);
-    build(r, "classic", true);
+    const r = getRandomResult(lang); setResult(r); build(r, "classic", true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -41,86 +35,83 @@ export default function ResultScreen({ photos, filterCSS, lang, onRetake }: Prop
 
   const download = () => {
     if (!stripUrl) return;
-    const a = document.createElement("a");
-    a.href = stripUrl; a.download = `sketchbooth-${Date.now()}.png`; a.click();
+    const a = document.createElement("a"); a.href = stripUrl; a.download = `sketchbooth-${Date.now()}.png`; a.click();
   };
-
   const share = async () => {
-    const text = t("Sketch Booth-д зураг авлаа! 📸 👉 sketchbooth.mn", "Took photos at Sketch Booth MN! 📸 👉 sketchbooth.mn");
+    const text = "Sketch Booth-д зураг авлаа! 📸 👉 sketchbooth.mn";
     if (navigator.share && stripUrl) {
-      try {
-        const blob = await (await fetch(stripUrl)).blob();
-        await navigator.share({ title: "Sketch Booth", text, files: [new File([blob], "strip.png", { type: "image/png" })] });
-        return;
-      } catch { /**/ }
+      try { const blob = await (await fetch(stripUrl)).blob(); await navigator.share({ title: "Sketch Booth", text, files: [new File([blob], "strip.png", { type: "image/png" })] }); return; } catch { /**/ }
     }
-    await navigator.clipboard.writeText(text);
-    setCopied(true); setTimeout(() => setCopied(false), 2500);
-    download();
+    await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2500); download();
   };
 
   if (!result) return null;
 
   return (
-    <div className="flex flex-col gap-5 w-full max-w-xl mx-auto">
-      <AdComponent adSlot="0987654321" format="horizontal" className="opacity-50" />
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
-      {/* Frame picker */}
-      <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+      {/* Frame */}
+      <div style={{ padding: 16, border: "1px solid #e5e5e3", borderRadius: 14, background: "white" }}>
         <FramePicker selected={frame} onChange={onFrameChange} lang={lang} />
       </div>
 
       {/* Sticker toggle */}
-      <div className="flex items-center justify-between px-1">
-        <span className="text-sm text-gray-600">{t("Стикер нэмэх", "Add stickers")}</span>
-        <button onClick={onStickerToggle}
-          className={`w-11 h-6 rounded-full transition-colors relative ${showStickers ? "bg-gray-900" : "bg-gray-200"}`}
-        >
-          <motion.div animate={{ x: showStickers ? 22 : 2 }} transition={{ type: "spring", stiffness: 500 }}
-            className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm"
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span style={{ fontSize: 12, color: "#999", letterSpacing: "0.04em" }}>Стикер нэмэх</span>
+        <button onClick={onStickerToggle} style={{
+          width: 40, height: 22, borderRadius: 100, border: "none", cursor: "pointer",
+          background: showStickers ? "#1a1a1a" : "#e5e5e3", position: "relative", transition: "background 0.2s",
+        }}>
+          <motion.div animate={{ x: showStickers ? 20 : 2 }} transition={{ type: "spring", stiffness: 500 }}
+            style={{ position: "absolute", top: 3, width: 16, height: 16, borderRadius: "50%", background: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }}
           />
         </button>
       </div>
 
       {/* Strip */}
-      <div className="relative rounded-2xl overflow-hidden border border-gray-100">
+      <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", border: "1px solid #e5e5e3" }}>
         {generating && (
-          <div className="absolute inset-0 bg-white/90 flex items-center justify-center z-10">
-            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-              className="w-8 h-8 border-2 border-gray-900 border-t-transparent rounded-full"
+          <div style={{ position: "absolute", inset: 0, background: "rgba(250,250,249,0.9)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 }}>
+            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.9, ease: "linear" }}
+              style={{ width: 24, height: 24, border: "2px solid #1a1a1a", borderTopColor: "transparent", borderRadius: "50%" }}
             />
           </div>
         )}
         <PhotoStrip photos={photos} stripUrl={stripUrl} lang={lang} />
       </div>
 
-      {/* Buttons */}
-      <div className="grid grid-cols-2 gap-3">
-        <button onClick={download} disabled={!stripUrl || generating}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white bg-gray-900 hover:bg-gray-700 disabled:opacity-40 transition-colors"
-        >
-          <Download className="w-4 h-4" />
-          {t("Татах", "Download")}
-        </button>
-        <button onClick={share} disabled={!stripUrl || generating}
-          className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold border-2 border-gray-900 text-gray-900 hover:bg-gray-50 disabled:opacity-40 transition-colors"
-        >
-          <Share2 className="w-4 h-4" />
+      {/* Actions */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <motion.button whileTap={{ scale: 0.97 }} onClick={download} disabled={!stripUrl || generating} style={{
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          padding: "13px 0", borderRadius: 12, border: "none", cursor: "pointer",
+          background: "#1a1a1a", color: "white", fontSize: 12, letterSpacing: "0.06em",
+          opacity: (!stripUrl || generating) ? 0.4 : 1,
+        }}>
+          <Download size={14} /> Татах
+        </motion.button>
+        <motion.button whileTap={{ scale: 0.97 }} onClick={share} disabled={!stripUrl || generating} style={{
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+          padding: "13px 0", borderRadius: 12, cursor: "pointer",
+          border: "1.5px solid #1a1a1a", background: "white", color: "#1a1a1a",
+          fontSize: 12, letterSpacing: "0.06em",
+          opacity: (!stripUrl || generating) ? 0.4 : 1,
+        }}>
+          <Share2 size={14} />
           <AnimatePresence mode="wait">
-            {copied
-              ? <motion.span key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>✓ {t("Хуулагдлаа", "Copied!")}</motion.span>
-              : <motion.span key="s" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Share</motion.span>
-            }
+            {copied ? <motion.span key="c" initial={{opacity:0}} animate={{opacity:1}}>✓ Хуулагдлаа</motion.span>
+                    : <motion.span key="s" initial={{opacity:0}} animate={{opacity:1}}>Share</motion.span>}
           </AnimatePresence>
-        </button>
+        </motion.button>
       </div>
 
-      <button onClick={onRetake}
-        className="flex items-center justify-center gap-2 py-3 rounded-xl text-gray-500 border border-gray-200 hover:border-gray-400 hover:text-gray-900 bg-white transition-all text-sm"
-      >
-        <RefreshCw className="w-4 h-4" />
-        {t("Дахин авах", "Retake")}
-      </button>
+      <motion.button whileTap={{ scale: 0.98 }} onClick={onRetake} style={{
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+        padding: "12px 0", borderRadius: 12, border: "1.5px solid #e5e5e3",
+        background: "white", color: "#999", fontSize: 12, letterSpacing: "0.06em", cursor: "pointer",
+      }}>
+        <RefreshCw size={13} /> Дахин авах
+      </motion.button>
     </div>
   );
 }

@@ -12,198 +12,190 @@ export default function Home() {
   const [photos, setPhotos] = useState<string[]>([]);
   const [filter, setFilter] = useState("none");
 
-  const lang = "mn";
-  const t = (mn: string, en: string) => lang === "mn" ? mn : en;
-
   const onComplete = useCallback((p: string[], f: string) => {
     setPhotos(p); setFilter(f); setPage("result");
   }, []);
-
   const onRetake = useCallback(() => {
     setPhotos([]); setFilter("none"); setPage("camera");
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#fafaf9", display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-      {/* ── HEADER ──────────────────────────────────────────── */}
-      <header className="sticky top-0 z-30 bg-white">
-        {/* Top micro-bar */}
-        <div style={{ background: "#111", padding: "6px 0" }}>
-          <div className="max-w-2xl mx-auto px-6 flex items-center justify-center">
-            <span style={{ fontFamily: "monospace", fontSize: "10px", letterSpacing: "0.3em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase" }}>
-              Mongolia's Funniest Photo Booth · Free · 2025
-            </span>
-          </div>
-        </div>
+      {/* ── HEADER ─────────────────────────────────────── */}
+      <header style={{
+        width: "100%",
+        borderBottom: "1px solid #e5e5e3",
+        position: "sticky", top: 0, zIndex: 50,
+        background: "#fafaf9",
+      }}>
+        <div style={{
+          maxWidth: 560,
+          margin: "0 auto",
+          padding: "0 24px",
+          height: 56,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          {/* Nav left */}
+          <nav style={{ display: "flex", gap: 20 }}>
+            {[{ href: "/faq", label: "FAQ" }, { href: "/contact", label: "Холбоо" }].map(l => (
+              <Link key={l.href} href={l.href} style={{
+                fontSize: 11, letterSpacing: "0.06em",
+                color: "#999", textDecoration: "none",
+                transition: "color 0.15s",
+              }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#1a1a1a")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#999")}
+              >{l.label}</Link>
+            ))}
+          </nav>
 
-        {/* Main header row */}
-        <div style={{ borderBottom: "1px solid #e8e8e8" }}>
-          <div className="max-w-2xl mx-auto px-6 flex items-center justify-between" style={{ height: "64px" }}>
+          {/* Logo — center */}
+          <button onClick={() => setPage("home")} style={{
+            position: "absolute", left: "50%", transform: "translateX(-50%)",
+            background: "none", border: "none", cursor: "pointer",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 1,
+          }}>
+            <span style={{
+              fontFamily: "'Instrument Serif', serif",
+              fontSize: 20, fontStyle: "italic",
+              color: "#1a1a1a", letterSpacing: "0.02em", lineHeight: 1,
+            }}>Sketch Booth</span>
+            <span style={{ fontSize: 9, letterSpacing: "0.2em", color: "#bbb", lineHeight: 1 }}>MN</span>
+          </button>
 
-            {/* Left nav */}
-            <nav className="flex items-center gap-6">
-              {[
-                { href: "/faq", label: "FAQ" },
-                { href: "/contact", label: "Холбоо" },
-              ].map(l => (
-                <Link key={l.href} href={l.href} className="group relative">
-                  <span style={{ fontSize: "12px", letterSpacing: "0.08em", color: "#999", textTransform: "uppercase", fontWeight: 500, transition: "color 0.2s" }}
-                    className="group-hover:text-black"
-                  >
-                    {l.label}
-                  </span>
-                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-300" />
-                </Link>
-              ))}
-            </nav>
-
-            {/* Center — wordmark */}
-            <button
-              onClick={() => setPage("home")}
-              className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
-            >
-              <span style={{
-                fontFamily: "'Georgia', serif",
-                fontSize: "22px",
-                fontWeight: 400,
-                letterSpacing: "0.12em",
-                color: "#111",
-                lineHeight: 1,
-                textTransform: "uppercase",
-              }}>
-                Sketch Booth
-              </span>
-              <span style={{
-                fontFamily: "monospace",
-                fontSize: "8px",
-                letterSpacing: "0.35em",
-                color: "#bbb",
-                marginTop: "3px",
-                textTransform: "uppercase",
-              }}>
-                Est. 2025 · MN
-              </span>
-            </button>
-
-            {/* Right — privacy link */}
-            <Link href="/privacy" className="group relative">
-              <span style={{ fontSize: "12px", letterSpacing: "0.08em", color: "#999", textTransform: "uppercase", fontWeight: 500 }}
-                className="group-hover:text-black transition-colors duration-200"
-              >
-                Нууцлал
-              </span>
-              <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-300" />
-            </Link>
-          </div>
+          {/* Nav right */}
+          <Link href="/privacy" style={{
+            fontSize: 11, letterSpacing: "0.06em",
+            color: "#999", textDecoration: "none", transition: "color 0.15s",
+          }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#1a1a1a")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#999")}
+          >Нууцлал</Link>
         </div>
       </header>
 
-      {/* ── MAIN ────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col items-center w-full px-4 py-8">
-        <div className="w-full max-w-2xl mx-auto">
-          <AnimatePresence mode="wait">
+      {/* ── CONTENT ────────────────────────────────────── */}
+      <main style={{ width: "100%", maxWidth: 560, padding: "0 24px", flex: 1 }}>
+        <AnimatePresence mode="wait">
 
-            {page === "home" && (
-              <motion.div key="home"
-                initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                className="flex flex-col items-center text-center gap-8 pt-8"
+          {/* HOME */}
+          {page === "home" && (
+            <motion.div key="home"
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 32, paddingTop: 64, paddingBottom: 64 }}
+            >
+              {/* Hero text */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 64 }}>📸</span>
+                <h1 style={{
+                  fontFamily: "'Instrument Serif', serif",
+                  fontSize: 42, fontStyle: "italic",
+                  color: "#1a1a1a", lineHeight: 1.1, fontWeight: 400,
+                }}>
+                  Зурагаа ав,<br />share хий.
+                </h1>
+                <p style={{ fontSize: 13, color: "#999", letterSpacing: "0.04em", lineHeight: 1.6, maxWidth: 300 }}>
+                  4 зураг автоматаар авч, filter, frame нэмж,<br />найздаа хуваалцаарай.
+                </p>
+              </div>
+
+              {/* Feature row */}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+                {["📸 4 зураг", "🎨 6 filter", "🖼️ 20 frame", "🎭 Стикер", "✨ Үнэгүй"].map(f => (
+                  <span key={f} style={{
+                    fontSize: 11, color: "#666", letterSpacing: "0.04em",
+                    border: "1px solid #e5e5e3", borderRadius: 100,
+                    padding: "4px 12px", background: "white",
+                  }}>{f}</span>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                onClick={() => setPage("camera")}
+                style={{
+                  background: "#1a1a1a", color: "#fafaf9",
+                  border: "none", borderRadius: 14,
+                  padding: "16px 48px", fontSize: 14,
+                  letterSpacing: "0.08em", cursor: "pointer",
+                  fontFamily: "'Geist Mono', monospace",
+                  width: "100%", maxWidth: 280,
+                }}
               >
-                <div className="text-7xl">📸</div>
-                <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">Sketch Booth</h1>
-                  <p className="text-gray-500 text-lg">{t("4 зураг аваад, strip болгоод, найздаа share хий!", "Take 4 photos, make a strip, share it!")}</p>
-                </div>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {[t("📸 4 зураг","📸 4 photos"), t("🎨 6 filter","🎨 6 filters"), t("🖼️ 20 frame","🖼️ 20 frames"), t("🎭 Стикер","🎭 Stickers"), t("📥 PNG татах","📥 Download"), t("✨ Үнэгүй","✨ Free")].map(f => (
-                    <span key={f} className="bg-gray-50 border border-gray-200 text-gray-600 text-sm px-3 py-1 rounded-full">{f}</span>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setPage("camera")}
-                  className="bg-gray-900 text-white text-lg font-semibold px-10 py-4 rounded-2xl hover:bg-gray-700 transition-colors w-full max-w-xs"
-                >
-                  {t("Эхлэх", "Start")} →
-                </button>
-                <p className="text-gray-400 text-sm">{t("Камерын зөвшөөрөл шаардлагатай", "Camera permission required")}</p>
-              </motion.div>
-            )}
+                Эхлэх →
+              </motion.button>
 
-            {page === "camera" && (
-              <motion.div key="camera" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                <div className="flex items-center gap-2 mb-6">
-                  <button onClick={() => setPage("home")} className="text-gray-400 hover:text-gray-900 text-sm">← {t("Буцах", "Back")}</button>
-                  <div className="h-4 w-px bg-gray-200" />
-                  <span className="text-sm text-gray-500">{t("Зураг авах", "Capture")}</span>
-                </div>
-                <Camera lang={lang} onComplete={onComplete} />
-              </motion.div>
-            )}
+              <span style={{ fontSize: 11, color: "#ccc", letterSpacing: "0.06em" }}>
+                Камерын зөвшөөрөл шаардлагатай
+              </span>
+            </motion.div>
+          )}
 
-            {page === "result" && (
-              <motion.div key="result" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                <div className="flex items-center gap-2 mb-6">
-                  <span className="text-sm font-medium text-gray-900">{t("Таны зургийн хэсэг", "Your photo strip")}</span>
-                </div>
-                <ResultScreen photos={photos} filterCSS={filter} lang={lang} onRetake={onRetake} />
-              </motion.div>
-            )}
+          {/* CAMERA */}
+          {page === "camera" && (
+            <motion.div key="camera"
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              style={{ paddingTop: 32, paddingBottom: 32 }}
+            >
+              <button onClick={() => setPage("home")} style={{
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: 12, color: "#999", letterSpacing: "0.06em",
+                marginBottom: 24, display: "flex", alignItems: "center", gap: 6,
+              }}>← Буцах</button>
+              <Camera lang="mn" onComplete={onComplete} />
+            </motion.div>
+          )}
 
-          </AnimatePresence>
-        </div>
+          {/* RESULT */}
+          {page === "result" && (
+            <motion.div key="result"
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              style={{ paddingTop: 32, paddingBottom: 32 }}
+            >
+              <ResultScreen photos={photos} filterCSS={filter} lang="mn" onRetake={onRetake} />
+            </motion.div>
+          )}
+
+        </AnimatePresence>
       </main>
 
-      {/* ── FOOTER ──────────────────────────────────────────── */}
-      <footer>
-        {/* Main footer */}
-        <div style={{ borderTop: "1px solid #e8e8e8", padding: "40px 0 32px" }}>
-          <div className="max-w-2xl mx-auto px-6">
-            <div className="flex items-start justify-between">
-              {/* Brand */}
-              <div>
-                <div style={{ fontFamily: "'Georgia', serif", fontSize: "18px", letterSpacing: "0.1em", color: "#111", textTransform: "uppercase", marginBottom: "6px" }}>
-                  Sketch Booth
-                </div>
-                <div style={{ fontFamily: "monospace", fontSize: "10px", letterSpacing: "0.25em", color: "#bbb", textTransform: "uppercase" }}>
-                  Mongolia · 2025
-                </div>
-              </div>
+      {/* ── FOOTER ─────────────────────────────────────── */}
+      <footer style={{
+        width: "100%",
+        borderTop: "1px solid #e5e5e3",
+        marginTop: "auto",
+      }}>
+        <div style={{
+          maxWidth: 560, margin: "0 auto",
+          padding: "24px 24px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+        }}>
+          <span style={{
+            fontFamily: "'Instrument Serif', serif",
+            fontSize: 15, fontStyle: "italic", color: "#bbb",
+          }}>Sketch Booth</span>
 
-              {/* Links grid */}
-              <div className="flex gap-12">
-                <div className="flex flex-col gap-3">
-                  <div style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: "0.3em", color: "#bbb", textTransform: "uppercase", marginBottom: "2px" }}>Хуудас</div>
-                  {[{ href: "/faq", label: "FAQ" }, { href: "/contact", label: "Холбоо барих" }].map(l => (
-                    <Link key={l.href} href={l.href} className="group relative self-start">
-                      <span style={{ fontSize: "13px", color: "#555" }} className="group-hover:text-black transition-colors duration-200">{l.label}</span>
-                      <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-300" />
-                    </Link>
-                  ))}
-                </div>
-                <div className="flex flex-col gap-3">
-                  <div style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: "0.3em", color: "#bbb", textTransform: "uppercase", marginBottom: "2px" }}>Бусад</div>
-                  {[{ href: "/privacy", label: "Нууцлал" }].map(l => (
-                    <Link key={l.href} href={l.href} className="group relative self-start">
-                      <span style={{ fontSize: "13px", color: "#555" }} className="group-hover:text-black transition-colors duration-200">{l.label}</span>
-                      <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-black group-hover:w-full transition-all duration-300" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div style={{ display: "flex", gap: 20 }}>
+            {[
+              { href: "/faq", label: "FAQ" },
+              { href: "/contact", label: "Холбоо" },
+              { href: "/privacy", label: "Нууцлал" },
+            ].map(l => (
+              <Link key={l.href} href={l.href} style={{
+                fontSize: 11, color: "#bbb", textDecoration: "none",
+                letterSpacing: "0.06em", transition: "color 0.15s",
+              }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#1a1a1a")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#bbb")}
+              >{l.label}</Link>
+            ))}
           </div>
-        </div>
 
-        {/* Bottom bar */}
-        <div style={{ background: "#111", padding: "12px 0" }}>
-          <div className="max-w-2xl mx-auto px-6 flex items-center justify-between">
-            <span style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: "0.3em", color: "rgba(255,255,255,0.25)", textTransform: "uppercase" }}>
-              © 2025 Sketch Booth MN
-            </span>
-            <span style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: "0.3em", color: "rgba(255,255,255,0.25)", textTransform: "uppercase" }}>
-              Free · Open · Fun
-            </span>
-          </div>
+          <span style={{ fontSize: 11, color: "#ddd", letterSpacing: "0.06em" }}>© 2025</span>
         </div>
       </footer>
 

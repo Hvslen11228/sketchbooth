@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
-
 export const metadata: Metadata = {
-  title: "Sketch Booth — Монголын хамгийн хөгжилтэй photo booth",
-  description: "4 зураг авч, strip үүсгэж, найздаа share хий!",
+  title: "Sketch Booth",
+  description: "Монголын хамгийн хөгжилтэй photo booth",
 };
-
-const ADSENSE_ID = "ca-pub-XXXXXXXXXXXXXXXX";
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="mn">
       <head>
-        <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`} crossOrigin="anonymous" strategy="lazyOnload" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
       </head>
       <body>{children}</body>
     </html>

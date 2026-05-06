@@ -1,20 +1,25 @@
+"use client";
 import PageShell from "@/components/PageShell";
-export const metadata = { title: "Холбоо барих — Sketch Booth" };
+const contacts = [
+  { icon: "✉️", label: "И-мэйл", value: "hvslencoder@gmail.com", href: "mailto:hvslencoder@gmail.com" },
+  { icon: "📞", label: "Утас",   value: "8836-3378",              href: "tel:88363378" },
+];
 export default function ContactPage() {
   return (
-    <PageShell title="Холбоо барих" emoji="📬">
-      <p className="text-gray-500 text-sm mb-2">Асуулт, санал хүсэлт байвал холбогдоорой.</p>
-      {[
-        { icon: "✉️", label: "И-мэйл", value: "hvslencoder@gmail.com", href: "mailto:hvslencoder@gmail.com" },
-        { icon: "📞", label: "Утас",   value: "8836-3378",              href: "tel:88363378" },
-      ].map(c => (
-        <a key={c.label} href={c.href}
-          className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:border-gray-300 hover:bg-white transition-all group"
-        >
-          <span className="text-2xl">{c.icon}</span>
+    <PageShell title="Холбоо барих" emoji="✉️">
+      <p style={{ fontSize: 13, color: "#999", letterSpacing: "0.04em", lineHeight: 1.8 }}>
+        Асуулт, санал хүсэлт байвал холбогдоорой.
+      </p>
+      {contacts.map(c => (
+        <a key={c.label} href={c.href} style={{
+          display: "flex", alignItems: "center", gap: 16,
+          padding: "16px 20px", border: "1px solid #e5e5e3",
+          borderRadius: 12, background: "white", textDecoration: "none",
+        }}>
+          <span style={{ fontSize: 20 }}>{c.icon}</span>
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">{c.label}</p>
-            <p className="text-gray-900 font-medium group-hover:text-gray-600">{c.value}</p>
+            <div style={{ fontSize: 10, color: "#bbb", letterSpacing: "0.1em", marginBottom: 2 }}>{c.label.toUpperCase()}</div>
+            <div style={{ fontSize: 13, color: "#1a1a1a", letterSpacing: "0.04em" }}>{c.value}</div>
           </div>
         </a>
       ))}
