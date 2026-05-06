@@ -115,7 +115,7 @@ export default function Home() {
               </div>
 
               {/* Ad — home page, below features */}
-              <AdBanner slot="XXXXXXXXXX" format="horizontal" />
+              <AdBanner slot="6924386635" format="horizontal" />
 
               {/* CTA */}
               <motion.button
@@ -161,7 +161,7 @@ export default function Home() {
               style={{ paddingTop: 32, paddingBottom: 32 }}
             >
               {/* Ad — result screen */}
-              <AdBanner slot="YYYYYYYYYY" format="horizontal" className="mb-5" />
+              <AdBanner slot="7005873575" format="horizontal" className="mb-5" />
               <ResultScreen photos={photos} filterCSS={filter} lang="mn" onRetake={onRetake} />
             </motion.div>
           )}
