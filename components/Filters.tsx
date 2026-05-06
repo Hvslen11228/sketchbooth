@@ -11,19 +11,19 @@ interface FiltersProps {
 export default function Filters({ selected, onChange, lang }: FiltersProps) {
   return (
     <div className="w-full">
-      <p className="font-mono text-[9px] text-[#9a9490] tracking-[0.25em] mb-3">
+      <p className="font-mono text-[9px] text-[#8a8070] tracking-widest mb-3 text-center">
         {lang === "mn" ? "ШҮҮЛТҮҮР / FILTER" : "FILTER"}
       </p>
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 overflow-x-auto pb-1 justify-center flex-wrap" style={{ scrollbarWidth: "none" }}>
         {FILTERS.map((f) => (
           <motion.button
             key={f.id}
-            whileTap={{ scale: 0.94 }}
+            whileTap={{ scale: 0.92 }}
             onClick={() => onChange(f.id)}
-            className={`px-3 py-2 font-mono text-[10px] tracking-wider transition-all border ${
+            className={`flex-shrink-0 px-3 py-2 text-xs font-mono tracking-wider transition-all border ${
               selected === f.id
-                ? "bg-[#0a0a0a] text-[#f9f7f4] border-[#0a0a0a]"
-                : "bg-[#f0ece4] text-[#9a9490] border-black/10 hover:border-black/30 hover:text-[#0a0a0a]"
+                ? "bg-[#d4a843] text-[#0d0d0d] border-[#d4a843]"
+                : "bg-[#111] text-[#8a8070] border-[#2a2a2a] hover:border-[#8a8070] hover:text-[#f5f0e8]"
             }`}
           >
             {f.emoji} {lang === "mn" ? f.label_mn : f.label_en}

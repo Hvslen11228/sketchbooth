@@ -7,11 +7,13 @@ import ResultScreen from "@/components/ResultScreen";
 
 type AppState = "home" | "camera" | "result";
 
-function FilmRail() {
+// Film sprocket strip decoration
+function FilmStrip({ vertical = false }: { vertical?: boolean }) {
+  const holes = Array.from({ length: vertical ? 12 : 8 });
   return (
-    <div className="flex items-center gap-2.5">
-      {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} className="sprocket" />
+    <div className={`flex ${vertical ? "flex-col" : "flex-row"} gap-3 items-center`}>
+      {holes.map((_, i) => (
+        <div key={i} className="sprocket flex-shrink-0" />
       ))}
     </div>
   );
@@ -20,36 +22,38 @@ function FilmRail() {
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("home");
   const [lang, setLang] = useState<"mn" | "en">("mn");
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [filter, setFilter] = useState<string>("none");
+  const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
+  const [capturedFilter, setCapturedFilter] = useState<string>("none");
 
   const t = (mn: string, en: string) => lang === "mn" ? mn : en;
 
-  const onComplete = useCallback((p: string[], f: string) => {
-    setPhotos(p); setFilter(f); setAppState("result");
+  const handlePhotosComplete = useCallback((photos: string[], filter: string) => {
+    setCapturedPhotos(photos);
+    setCapturedFilter(filter);
+    setAppState("result");
   }, []);
 
-  const onRetake = useCallback(() => {
-    setPhotos([]); setFilter("none"); setAppState("camera");
+  const handleRetake = useCallback(() => {
+    setCapturedPhotos([]);
+    setCapturedFilter("none");
+    setAppState("camera");
   }, []);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-[#0d0d0d] flex flex-col">
 
-      {/* ── NAVBAR ─────────────────────────────────────────────
-          Film rail top → Logo center → Nav links → Lang toggle
-      ─────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-30 bg-white border-b border-[#e8e5e0]">
+      {/* ── NAVBAR ─────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-30 bg-[#0d0d0d] border-b border-[#1e1e1e]">
 
-        {/* Top film rail */}
-        <div className="bg-[#f7f5f2] border-b border-[#e8e5e0] px-6 py-2 flex items-center justify-between">
-          <FilmRail />
-          <span className="font-mono text-[9px] text-[#c8c4be] tracking-[0.35em]">SKETCH BOOTH MN</span>
-          <FilmRail />
+        {/* Film rail */}
+        <div className="bg-[#1a1a1a] border-b border-[#2a2a2a] px-6 py-1.5 flex items-center justify-between">
+          <FilmStrip />
+          <span className="font-mono text-[9px] text-[#8a8070]/30 tracking-[0.35em]">SKETCH BOOTH MN</span>
+          <FilmStrip />
         </div>
 
-        {/* Main nav — 3 column: links | logo | lang+cta */}
-        <div className="grid grid-cols-3 items-center px-6 py-0 h-16">
+        {/* 3-column: nav | logo | lang+cta */}
+        <div className="grid grid-cols-3 items-center px-6 h-16">
 
           {/* Left — nav links */}
           <nav className="flex items-center gap-0">
@@ -61,11 +65,11 @@ export default function Home() {
               <span key={l.href} className="flex items-center">
                 <Link
                   href={l.href}
-                  className="font-mono text-[10px] tracking-[0.18em] text-[#9a9490] hover:text-[#111110] transition-colors px-3 py-1.5 hover:bg-[#f7f5f2] rounded-sm"
+                  className="font-mono text-[10px] tracking-[0.18em] text-[#8a8070] hover:text-[#d4a843] transition-colors px-3 py-1.5"
                 >
                   {lang === "mn" ? l.mn : l.en}
                 </Link>
-                {i < 2 && <span className="text-[#e8e5e0] text-xs select-none">·</span>}
+                {i < 2 && <span className="text-[#2a2a2a] text-xs select-none">·</span>}
               </span>
             ))}
           </nav>
@@ -76,10 +80,9 @@ export default function Home() {
             onClick={() => setAppState("home")}
             className="flex flex-col items-center justify-center"
           >
-            <div className="font-display leading-none text-center">
-              {/* Big logo — 2 lines */}
-              <div className="text-[32px] md:text-[40px] text-[#111110] leading-[0.9]">SKETCH</div>
-              <div className="text-[32px] md:text-[40px] text-[#c8913a] leading-[0.9]">BOOTH</div>
+            <div className="font-display leading-[0.88] text-center tracking-wide">
+              <div className="text-[28px] md:text-[36px] text-[#f5f0e8]">SKETCH</div>
+              <div className="text-[28px] md:text-[36px] film-shimmer">BOOTH</div>
             </div>
           </motion.button>
 
@@ -87,14 +90,14 @@ export default function Home() {
           <div className="flex items-center justify-end gap-2">
             <button
               onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
-              className="font-mono text-[10px] tracking-widest text-[#9a9490] hover:text-[#111110] border border-[#e8e5e0] hover:border-[#111110] px-3 py-1.5 transition-all rounded-sm"
+              className="font-mono text-[10px] tracking-widest text-[#8a8070] hover:text-[#d4a843] border border-[#2a2a2a] hover:border-[#d4a843] px-3 py-1.5 transition-all"
             >
               {lang === "mn" ? "EN" : "МН"}
             </button>
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={() => setAppState("camera")}
-              className="font-mono text-[10px] tracking-[0.18em] bg-[#111110] text-white px-4 py-2 hover:bg-[#c8913a] transition-colors rounded-sm"
+              className="font-mono text-[10px] tracking-[0.18em] bg-[#d4a843] text-[#0d0d0d] px-4 py-2 hover:bg-[#f0c060] transition-colors font-bold"
             >
               {t("ЭХЛЭХ ↗", "START ↗")}
             </motion.button>
@@ -102,7 +105,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ── MAIN ─────────────────────────────────────────────── */}
+      {/* ── MAIN CONTENT ──────────────────────────────────────── */}
       <main className="flex-1 flex flex-col">
         <AnimatePresence mode="wait">
 
@@ -113,108 +116,120 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex-1"
+              className="flex-1 grid md:grid-cols-[1fr_auto_1fr] gap-0"
             >
-              {/* Hero — split grid */}
-              <div className="grid md:grid-cols-[1fr_360px] min-h-[calc(100vh-120px)] border-b border-[#e8e5e0]">
+              {/* Left panel */}
+              <div className="p-6 md:p-10 flex flex-col justify-between border-r border-[#1e1e1e]">
+                {/* Feature list */}
+                <div className="space-y-4 mt-4">
+                  {[
+                    { num: "01", text: t("3 секундын countdown", "3-second countdown") },
+                    { num: "02", text: t("4 зураг автоматаар", "4 automatic captures") },
+                    { num: "03", text: t("6 filter сонголт", "6 filter options") },
+                    { num: "04", text: t("10 хүрээний загвар", "10 frame styles") },
+                    { num: "05", text: t("Emoji стикер overlay", "Emoji sticker overlay") },
+                    { num: "06", text: t("PNG татах & share", "PNG download & share") },
+                  ].map((f, i) => (
+                    <motion.div
+                      key={f.num}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07 }}
+                      className="flex items-center gap-4 group"
+                    >
+                      <span className="font-mono text-[10px] text-[#d4a843]/60 w-6 flex-shrink-0">{f.num}</span>
+                      <div className="h-px w-6 bg-[#2a2a2a] group-hover:w-10 group-hover:bg-[#d4a843]/40 transition-all duration-300" />
+                      <span className="font-mono text-xs text-[#8a8070] group-hover:text-[#f5f0e8] transition-colors">{f.text}</span>
+                    </motion.div>
+                  ))}
+                </div>
 
-                {/* Left — text */}
-                <div className="p-10 md:p-16 flex flex-col justify-between border-r border-[#e8e5e0]">
+                {/* ISO badge */}
+                <div className="mt-8 inline-flex items-center gap-2 border border-[#2a2a2a] px-3 py-1.5 self-start">
+                  <div className="w-2 h-2 rounded-full bg-[#d4a843] animate-pulse" />
+                  <span className="font-mono text-[10px] text-[#8a8070]">ISO 400 • FREE</span>
+                </div>
+              </div>
+
+              {/* Center — big CTA */}
+              <div className="flex flex-col items-center justify-center p-8 gap-8 relative">
+                {/* Vertical film strip left */}
+                <div className="hidden md:block absolute left-0 top-0 bottom-0 bg-[#1a1a1a] w-5 flex flex-col items-center justify-center py-4 gap-3">
+                  <FilmStrip vertical />
+                </div>
+                <div className="hidden md:block absolute right-0 top-0 bottom-0 bg-[#1a1a1a] w-5 flex flex-col items-center justify-center py-4 gap-3">
+                  <FilmStrip vertical />
+                </div>
+
+                {/* Camera icon */}
+                <motion.div
+                  animate={{ scale: [1, 1.04, 1] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                  className="relative"
+                >
+                  <div className="w-28 h-28 rounded-2xl bg-[#1a1a1a] border-2 border-[#2a2a2a] flex items-center justify-center text-6xl shadow-2xl">
+                    📸
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#c0392b] animate-pulse" />
+                </motion.div>
+
+                {/* Main CTA button */}
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ scale: 1.02 }}
+                  onClick={() => setAppState("camera")}
+                  className="relative overflow-hidden w-full max-w-[200px]"
+                >
+                  <div className="bg-[#d4a843] text-[#0d0d0d] font-display text-3xl py-4 px-8 w-full text-center tracking-wider hover:bg-[#f0c060] transition-colors">
+                    {t("ЭХЛЭХ", "START")}
+                  </div>
+                  {/* Shimmer */}
+                  <motion.div
+                    animate={{ x: ["-100%", "200%"] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 pointer-events-none"
+                  />
+                </motion.button>
+
+                <p className="font-mono text-[10px] text-[#8a8070]/60 text-center max-w-[160px] leading-relaxed">
+                  {t("КАМЕРЫН ЗӨВШӨӨРӨЛ ШААРДЛАГАТАЙ", "CAMERA PERMISSION REQUIRED")}
+                </p>
+              </div>
+
+              {/* Right panel — exposure sheet aesthetic */}
+              <div className="p-6 md:p-10 border-l border-[#1e1e1e] hidden md:flex flex-col justify-between">
+                <div className="space-y-6">
                   <div>
-                    {/* Tag */}
-                    <div className="inline-flex items-center gap-2.5 mb-10 border border-[#e8e5e0] px-3 py-1.5 rounded-full">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#c8913a] animate-pulse" />
-                      <span className="font-mono text-[9px] text-[#9a9490] tracking-[0.25em]">
-                        ISO 400 · FREE · MONGOLIA 🇲🇳
-                      </span>
-                    </div>
-
-                    {/* Giant headline */}
-                    <h1 className="font-display leading-[0.88] tracking-wide text-[#111110]"
-                        style={{ fontSize: "clamp(72px, 14vw, 180px)" }}>
-                      SKETCH<br />
-                      <span className="text-[#c8913a]">BOOTH</span>
-                    </h1>
-
-                    <p className="font-sans font-light text-lg text-[#9a9490] mt-8 max-w-sm leading-relaxed">
-                      {t(
-                        "4 зураг авч, filter, frame нэмж, найздаа share хий.",
-                        "Capture 4 photos, add filters & frames, share instantly."
-                      )}
-                    </p>
-
-                    {/* Feature list */}
-                    <div className="mt-10 space-y-3">
-                      {[
-                        { n: "01", txt: t("3 секундын countdown · 4 автомат зураг", "3s countdown · 4 auto captures") },
-                        { n: "02", txt: t("6 filter · 20 frame загвар", "6 filters · 20 frame styles") },
-                        { n: "03", txt: t("Emoji стикер · PNG татах · Share", "Emoji stickers · PNG download · Share") },
-                      ].map(f => (
-                        <div key={f.n} className="flex items-center gap-4 group">
-                          <span className="font-mono text-[10px] text-[#c8913a]/60 w-6">{f.n}</span>
-                          <div className="h-px w-5 bg-[#e8e5e0] group-hover:w-8 group-hover:bg-[#c8913a]/40 transition-all duration-300" />
-                          <span className="font-mono text-[11px] text-[#9a9490] group-hover:text-[#111110] transition-colors">{f.txt}</span>
+                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ОГНОО / DATE</p>
+                    <p className="font-mono text-xs text-[#8a8070]">{new Date().toLocaleDateString("mn-MN")}</p>
+                  </div>
+                  <div>
+                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ФОРМАТ / FORMAT</p>
+                    <p className="font-mono text-xs text-[#8a8070]">4×1 STRIP • PNG</p>
+                  </div>
+                  <div>
+                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ЗУРГИЙН ТОО / FRAMES</p>
+                    <div className="flex gap-2 mt-1">
+                      {[1,2,3,4].map(n => (
+                        <div key={n} className="w-8 h-10 border border-[#2a2a2a] flex items-center justify-center">
+                          <span className="font-mono text-[9px] text-[#8a8070]">{n}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  {/* Exposure bar */}
-                  <div className="mt-12">
-                    <p className="font-mono text-[9px] text-[#c8c4be] tracking-widest mb-2">EXPOSURE</p>
-                    <div className="flex gap-px h-4">
-                      {Array.from({ length: 28 }).map((_, i) => (
-                        <div key={i} className="flex-1 rounded-[1px]"
-                          style={{ background: `rgba(200,145,58,${(i / 28) * 0.85})` }} />
-                      ))}
-                    </div>
+                  <div>
+                    <p className="font-mono text-[9px] text-[#8a8070]/50 tracking-widest mb-2">ХУРД / SPEED</p>
+                    <p className="font-mono text-xs text-[#8a8070]">1/125s • f/2.8</p>
                   </div>
                 </div>
 
-                {/* Right — dark panel */}
-                <div className="flex flex-col">
-                  {/* Camera visual */}
-                  <div className="flex-1 bg-[#111110] flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-[0.04]"
-                      style={{ backgroundImage: "repeating-linear-gradient(-45deg,#fff 0,#fff 1px,transparent 1px,transparent 14px)" }} />
-                    <motion.div
-                      animate={{ scale: [1, 1.06, 1], rotate: [0, 2, -2, 0] }}
-                      transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                      className="text-[90px] select-none relative z-10"
-                    >📸</motion.div>
-                    {/* REC */}
-                    <div className="absolute top-5 right-5 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                      <span className="font-mono text-[9px] text-white/30 tracking-widest">REC</span>
-                    </div>
-                    {/* Ghost counter */}
-                    <div className="absolute bottom-4 left-5">
-                      <span className="font-display text-[56px] text-white/[0.06] leading-none">04</span>
-                    </div>
-                  </div>
-
-                  {/* CTA */}
-                  <motion.button
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setAppState("camera")}
-                    className="relative overflow-hidden bg-[#c8913a] text-white font-display text-4xl tracking-wider py-8 text-center hover:bg-[#111110] transition-colors duration-300 group"
-                  >
-                    <motion.div
-                      animate={{ x: ["-100%", "200%"] }}
-                      transition={{ repeat: Infinity, duration: 2.5, ease: "linear" }}
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
-                    />
-                    {t("ЭХЛЭХ", "START")}
-                    <span className="ml-2 inline-block group-hover:translate-x-1 transition-transform">→</span>
-                  </motion.button>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 divide-x divide-[#e8e5e0] border-t border-[#e8e5e0] bg-[#f7f5f2]">
-                    {[{ v: "20", l: "FRAMES" }, { v: "4×", l: "SHOTS" }].map(s => (
-                      <div key={s.l} className="px-6 py-4">
-                        <div className="font-display text-3xl text-[#111110] leading-none">{s.v}</div>
-                        <div className="font-mono text-[9px] text-[#9a9490] tracking-widest mt-1">{s.l}</div>
-                      </div>
+                {/* Decorative exposure gradient */}
+                <div className="mt-4">
+                  <p className="font-mono text-[9px] text-[#8a8070]/40 tracking-widest mb-2">EXPOSURE</p>
+                  <div className="flex gap-0.5">
+                    {Array.from({length: 16}).map((_, i) => (
+                      <div key={i} className="h-6 flex-1 rounded-sm"
+                        style={{ background: `rgba(212,168,67,${i/16 * 0.8})` }} />
                     ))}
                   </div>
                 </div>
@@ -224,41 +239,69 @@ export default function Home() {
 
           {/* CAMERA */}
           {appState === "camera" && (
-            <motion.div key="camera" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col items-center justify-center px-4 py-10"
+            <motion.div
+              key="camera"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex flex-col items-center justify-start px-4 py-6"
             >
-              <div className="w-full max-w-2xl mb-5 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#c8913a] animate-pulse" />
-                <span className="font-mono text-[9px] tracking-[0.3em] text-[#9a9490]">{t("ЗУРАГ АВАХ", "CAPTURE MODE")}</span>
-                <div className="h-px flex-1 bg-[#e8e5e0]" />
-              </div>
-              <Camera lang={lang} onComplete={onComplete} />
+              <Camera lang={lang} onComplete={handlePhotosComplete} />
             </motion.div>
           )}
 
           {/* RESULT */}
           {appState === "result" && (
-            <motion.div key="result" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col items-center px-4 py-10"
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 flex flex-col items-center justify-start px-4 py-6"
             >
-              <div className="w-full max-w-xl mb-5 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#c8913a]" />
-                <span className="font-mono text-[9px] tracking-[0.3em] text-[#9a9490]">{t("ТАНЫ STRIP", "YOUR STRIP")}</span>
-                <div className="h-px flex-1 bg-[#e8e5e0]" />
-              </div>
-              <ResultScreen photos={photos} filterCSS={filter} lang={lang} onRetake={onRetake} />
+              <ResultScreen
+                photos={capturedPhotos}
+                filterCSS={capturedFilter}
+                lang={lang}
+                onRetake={handleRetake}
+              />
             </motion.div>
           )}
 
         </AnimatePresence>
       </main>
 
-      {/* ── BOTTOM FILM RAIL ─────────────────────────────────── */}
-      <footer className="border-t border-[#e8e5e0] bg-[#f7f5f2] px-6 py-2 flex items-center justify-between">
-        <FilmRail />
-        <span className="font-mono text-[9px] text-[#c8c4be] tracking-[0.3em]">© 2025 SKETCH BOOTH MN</span>
-        <FilmRail />
-      </footer>
+      {/* ── BOTTOM FILM RAIL + FOOTER ──────────────────────────── */}
+      <div className="border-t border-[#1e1e1e]">
+        {/* Footer links */}
+        <div className="px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            {[
+              { href: "/faq",     label: t("АСУУЛТ", "FAQ") },
+              { href: "/contact", label: t("ХОЛБОО", "CONTACT") },
+              { href: "/privacy", label: t("НУУЦЛАЛ", "PRIVACY") },
+            ].map((l, i) => (
+              <span key={l.href} className="flex items-center">
+                <Link
+                  href={l.href}
+                  className="font-mono text-[11px] text-[#8a8070] hover:text-[#d4a843] transition-colors tracking-widest px-3 py-1"
+                >
+                  {l.label}
+                </Link>
+                {i < 2 && <span className="text-[#2a2a2a] text-xs">·</span>}
+              </span>
+            ))}
+          </div>
+          <span className="font-mono text-[10px] text-[#8a8070]/40">© 2025</span>
+        </div>
+
+        {/* Bottom film strip */}
+        <div className="bg-[#1a1a1a] border-t border-[#2a2a2a] px-6 py-2 flex items-center justify-between">
+          <FilmStrip />
+          <span className="font-mono text-[9px] text-[#8a8070]/30 tracking-widest">SKETCH BOOTH MN</span>
+          <FilmStrip />
+        </div>
+      </div>
     </div>
   );
 }

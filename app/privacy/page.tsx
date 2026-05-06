@@ -11,9 +11,9 @@ export default function PrivacyPage() {
   return (
     <PageShell title="НУУЦЛАЛЫН БОДЛОГО" emoji="🔒">
       {sections.map((s) => (
-        <div key={s.title} className="p-6 border border-black/10 bg-[#f0ece4]">
-          <h2 className="font-mono text-[9px] text-[#e8301a] tracking-widest mb-3">{s.title}</h2>
-          <p className="font-mono text-xs text-[#9a9490] leading-relaxed">{s.body}</p>
+        <div key={s.title} className="border border-[#2a2a2a] bg-[#111] p-5">
+          <h2 className="font-mono text-[9px] text-[#d4a843] tracking-widest mb-2">{s.title}</h2>
+          <p className="font-mono text-xs text-[#8a8070] leading-relaxed">{s.body}</p>
         </div>
       ))}
     </PageShell>
