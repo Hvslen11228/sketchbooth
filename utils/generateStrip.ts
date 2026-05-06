@@ -45,7 +45,7 @@ export async function generateStrip(opts: StripOptions): Promise<string> {
   ctx.fillRect(0, 0, STRIP_W, STRIP_H);
 
   // ── Background pattern ─────────────────────────────────────────────────────
-  drawPattern(ctx, frame.pattern ?? "none", frame.accentColor, STRIP_W, STRIP_H);
+  drawPattern(ctx, (frame.pattern ?? "none") as string, frame.accentColor, STRIP_W, STRIP_H);
 
   // ── Header ─────────────────────────────────────────────────────────────────
   ctx.shadowColor = frame.headerColor;
@@ -199,6 +199,69 @@ function drawPattern(
       for (let y = 20; y < h; y += 36) {
         ctx.fillText("♥", x, y);
       }
+    }
+  } else if (pattern === "ugulz") {
+    // Угалзан хээ — traditional Mongolian scrollwork border pattern
+    ctx.globalAlpha = 0.18;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    const step = 30;
+    for (let x = 0; x < w; x += step) {
+      // Vertical borders: top and bottom bands
+      for (const bandY of [0, h - step]) {
+        ctx.beginPath();
+        ctx.moveTo(x, bandY + step * 0.5);
+        ctx.bezierCurveTo(x + step * 0.3, bandY, x + step * 0.7, bandY + step, x + step, bandY + step * 0.5);
+        ctx.stroke();
+        // Small loop flourish
+        ctx.beginPath();
+        ctx.arc(x + step * 0.5, bandY + step * 0.5, step * 0.15, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    for (let y = step; y < h - step; y += step) {
+      for (const bandX of [0, w - step]) {
+        ctx.beginPath();
+        ctx.moveTo(bandX + step * 0.5, y);
+        ctx.bezierCurveTo(bandX, y + step * 0.3, bandX + step, y + step * 0.7, bandX + step * 0.5, y + step);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(bandX + step * 0.5, y + step * 0.5, step * 0.15, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  } else if (pattern === "els") {
+    // Говийн элс — sand dune wave lines
+    ctx.globalAlpha = 0.12;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    for (let y = 20; y < h; y += 22) {
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 4) {
+        const wave = Math.sin((x / w) * Math.PI * 6 + y * 0.1) * 5;
+        x === 0 ? ctx.moveTo(x, y + wave) : ctx.lineTo(x, y + wave);
+      }
+      ctx.stroke();
+    }
+  } else if (pattern === "naran") {
+    // Нарны тойрог — radiating sun rays from center
+    ctx.globalAlpha = 0.10;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    const cx = w / 2, cy = h / 2;
+    const rays = 24;
+    for (let i = 0; i < rays; i++) {
+      const angle = (i / rays) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(angle) * 40, cy + Math.sin(angle) * 40);
+      ctx.lineTo(cx + Math.cos(angle) * Math.max(w, h), cy + Math.sin(angle) * Math.max(w, h));
+      ctx.stroke();
+    }
+    // Center circle rings
+    for (const r of [20, 35]) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
     }
   } else if (pattern === "zigzag") {
     ctx.strokeStyle = color;

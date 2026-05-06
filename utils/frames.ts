@@ -2,7 +2,9 @@ export type FrameId =
   | "classic" | "neon_pink" | "neon_cyan" | "gold" | "dark"
   | "pastel"  | "rainbow"   | "retro"     | "minimal" | "party"
   | "cherry"  | "ocean"     | "forest"    | "sunset"  | "midnight"
-  | "cotton"  | "lavender"  | "noir"      | "holographic" | "polaroid";
+  | "cotton"  | "lavender"  | "noir"      | "holographic" | "polaroid"
+  // 🇲🇳 Mongolian frames
+  | "mongol_uguljee" | "mongol_els" | "mongol_flag" | "mongol_naran" | "mongol_nomad";
 
 export interface FrameOption {
   id: FrameId;
@@ -14,7 +16,7 @@ export interface FrameOption {
   headerColor: string;
   captionColor: string;
   accentColor: string;
-  pattern?: "dots" | "stars" | "hearts" | "zigzag" | "none";
+  pattern?: "dots" | "stars" | "hearts" | "zigzag" | "none" | "ugulz" | "els" | "naran";
   previewCSS: string;
 }
 
@@ -140,6 +142,42 @@ export const FRAMES: FrameOption[] = [
     bgGradient: ["#fffef0","#fffde8","#fefce8"],
     borderColor: "#e5e5e5", headerColor: "#1a1a1a", captionColor: "#555555", accentColor: "#1a1a1a",
     pattern: "none", previewCSS: "linear-gradient(135deg,#fffef0,#fefce8)",
+  },
+  // ── 🇲🇳 Монгол дүрст frame-ууд ─────────────────────────────
+  {
+    id: "mongol_uguljee",
+    label_mn: "Угалзан хээ", label_en: "Ugalz", emoji: "🔷",
+    bgGradient: ["#1a0800","#2d1200","#1a0800"],
+    borderColor: "#c8781a", headerColor: "#e8a030", captionColor: "#ffd080", accentColor: "#c8781a",
+    pattern: "ugulz", previewCSS: "linear-gradient(135deg,#1a0800,#2d1200)",
+  },
+  {
+    id: "mongol_els",
+    label_mn: "Говийн элс", label_en: "Gobi Sand", emoji: "🏜️",
+    bgGradient: ["#f5e6c8","#e8d4a0","#f0ddb0"],
+    borderColor: "#8b6914", headerColor: "#5a3c00", captionColor: "#3d2800", accentColor: "#8b6914",
+    pattern: "els", previewCSS: "linear-gradient(135deg,#f5e6c8,#e8d4a0)",
+  },
+  {
+    id: "mongol_flag",
+    label_mn: "Монгол туг", label_en: "Mongolia Flag", emoji: "🇲🇳",
+    bgGradient: ["#003478","#004aad","#003478"],
+    borderColor: "#c8102e", headerColor: "#f5c518", captionColor: "#f5c518", accentColor: "#c8102e",
+    pattern: "none", previewCSS: "linear-gradient(135deg,#003478,#c8102e)",
+  },
+  {
+    id: "mongol_naran",
+    label_mn: "Нарны тойрог", label_en: "Sun Circle", emoji: "☀️",
+    bgGradient: ["#1a0000","#2d0800","#1a0000"],
+    borderColor: "#ff6b00", headerColor: "#ffaa00", captionColor: "#ffd060", accentColor: "#ff6b00",
+    pattern: "naran", previewCSS: "linear-gradient(135deg,#1a0000,#ff6b00,#1a0000)",
+  },
+  {
+    id: "mongol_nomad",
+    label_mn: "Нүүдэлчин", label_en: "Nomad", emoji: "🏕️",
+    bgGradient: ["#0a2010","#143020","#0a2010"],
+    borderColor: "#e8e8e8", headerColor: "#a0d0a0", captionColor: "#c0e0c0", accentColor: "#4a9a4a",
+    pattern: "dots", previewCSS: "linear-gradient(135deg,#0a2010,#4a9a4a,#87ceeb)",
   },
 ];
 
