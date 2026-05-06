@@ -28,13 +28,18 @@ export default function Home() {
 
       {/* Navbar */}
       <header className="border-b border-gray-100 sticky top-0 bg-white z-20">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <button onClick={() => setPage("home")} className="font-bold text-lg text-gray-900">
-            Sketch Booth
-          </button>
-          <div className="flex items-center gap-3">
+        <div className="max-w-2xl mx-auto px-4 h-14 grid grid-cols-3 items-center">
+          {/* Left — nav links */}
+          <div className="flex items-center gap-4">
             <Link href="/faq" className="text-sm text-gray-500 hover:text-gray-900">FAQ</Link>
             <Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">Холбоо</Link>
+          </div>
+          {/* Center — logo */}
+          <button onClick={() => setPage("home")} className="font-bold text-lg text-gray-900 text-center">
+            Sketch Booth
+          </button>
+          {/* Right — lang */}
+          <div className="flex justify-end">
             <button
               onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
               className="text-sm text-gray-400 hover:text-gray-900 border border-gray-200 px-2 py-0.5 rounded"
