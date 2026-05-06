@@ -28,21 +28,21 @@ export default function Home() {
 
       {/* Navbar */}
       <header className="border-b border-gray-100 sticky top-0 bg-white z-20">
-        <div className="max-w-2xl mx-auto px-6 h-14 grid grid-cols-3 items-center">
-          {/* Left — nav links */}
-          <div className="flex items-center gap-4">
-            <Link href="/faq" className="text-sm text-gray-500 hover:text-gray-900">FAQ</Link>
-            <Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">Холбоо</Link>
-          </div>
-          {/* Center — logo */}
-          <button onClick={() => setPage("home")} className="font-bold text-lg text-gray-900 text-center">
+        <div className="w-full max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
+          {/* Left */}
+          <nav className="flex items-center gap-5 w-36">
+            <Link href="/faq" className="text-sm text-gray-400 hover:text-gray-900 transition-colors">FAQ</Link>
+            <Link href="/contact" className="text-sm text-gray-400 hover:text-gray-900 transition-colors">Холбоо</Link>
+          </nav>
+          {/* Center */}
+          <button onClick={() => setPage("home")} className="font-bold text-base text-gray-900 tracking-tight absolute left-1/2 -translate-x-1/2">
             Sketch Booth
           </button>
-          {/* Right — lang */}
-          <div className="flex justify-end">
+          {/* Right */}
+          <div className="w-36 flex justify-end">
             <button
               onClick={() => setLang(l => l === "mn" ? "en" : "mn")}
-              className="text-sm text-gray-400 hover:text-gray-900 border border-gray-200 px-2 py-0.5 rounded"
+              className="text-sm text-gray-400 hover:text-gray-900 border border-gray-200 px-2.5 py-1 rounded-md transition-colors"
             >
               {lang === "mn" ? "EN" : "МН"}
             </button>
@@ -126,11 +126,11 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-4">
-        <div className="max-w-2xl mx-auto px-6 flex items-center justify-between">
-          <div className="flex gap-4">
-            <Link href="/faq" className="text-sm text-gray-400 hover:text-gray-600">FAQ</Link>
-            <Link href="/contact" className="text-sm text-gray-400 hover:text-gray-600">Холбоо барих</Link>
-            <Link href="/privacy" className="text-sm text-gray-400 hover:text-gray-600">Нууцлал</Link>
+        <div className="w-full max-w-2xl mx-auto px-6 flex items-center justify-between">
+          <div className="flex gap-5">
+            <Link href="/faq" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">FAQ</Link>
+            <Link href="/contact" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Холбоо барих</Link>
+            <Link href="/privacy" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Нууцлал</Link>
           </div>
           <span className="text-sm text-gray-300">© 2025</span>
         </div>
