@@ -51,7 +51,8 @@ export default function Home() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 flex flex-col items-center w-full px-4 py-8">
+        <div className="w-full max-w-lg">
         <AnimatePresence mode="wait">
 
           {/* Home */}
@@ -120,6 +121,7 @@ export default function Home() {
           )}
 
         </AnimatePresence>
+        </div>
       </main>
 
       {/* Footer */}
