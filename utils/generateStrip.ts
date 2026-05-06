@@ -10,43 +10,34 @@ export interface StripOptions {
   lang: "mn" | "en";
 }
 
-const PHOTO_W  = 600;
-const PHOTO_H  = 450;
-const MARGIN   = 24;
-const BORDER   = 20;
-const HEADER_H = 90;
-const FOOTER_H = 90;
-const STRIP_W  = PHOTO_W + BORDER * 2 + MARGIN * 2;
+const PHOTO_W = 600;
+const PHOTO_H = 450;
+const GAP     = 10;
+const PAD     = 18;
+const BORDER  = 14;
+const STRIP_W = PHOTO_W + (PAD + BORDER) * 2;
 
 export async function generateStrip(opts: StripOptions): Promise<string> {
-  const { photos, filterCSS, frame, showStickers, stickers, caption } = opts;
-  const STRIP_H = HEADER_H + (PHOTO_H + MARGIN) * photos.length + MARGIN + FOOTER_H;
+  const { photos, filterCSS, frame, showStickers, stickers } = opts;
+
+  const STRIP_H = PAD * 2 + BORDER * 2 + PHOTO_H * photos.length + GAP * (photos.length - 1);
 
   const canvas = document.createElement("canvas");
   canvas.width  = STRIP_W;
   canvas.height = STRIP_H;
   const ctx = canvas.getContext("2d")!;
 
-  // ── Background ────────────────────────────────────────────
+  // Background
   const [c0, c1, c2] = frame.bgGradient;
   const bg = ctx.createLinearGradient(0, 0, STRIP_W, STRIP_H);
   bg.addColorStop(0, c0); bg.addColorStop(0.5, c1); bg.addColorStop(1, c2);
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, STRIP_W, STRIP_H);
 
-  // ── Draw decorative frame border overlay ─────────────────
+  // Mongolian frame decoration
   drawFrameDecoration(ctx, frame.id, frame.accentColor, frame.borderColor, STRIP_W, STRIP_H);
 
-  // ── Header ───────────────────────────────────────────────
-  ctx.shadowColor = frame.headerColor;
-  ctx.shadowBlur  = 10;
-  ctx.fillStyle   = frame.headerColor;
-  ctx.font        = "bold 24px sans-serif";
-  ctx.textAlign   = "center";
-  ctx.fillText("📸 Sketch Booth MN", STRIP_W / 2, 52);
-  ctx.shadowBlur  = 0;
-
-  // ── Photos ────────────────────────────────────────────────
+  // Photos
   const loadImg = (src: string): Promise<HTMLImageElement> =>
     new Promise((res, rej) => {
       const img = new Image();
@@ -57,24 +48,21 @@ export async function generateStrip(opts: StripOptions): Promise<string> {
 
   for (let i = 0; i < photos.length; i++) {
     const img = await loadImg(photos[i]);
-    const x = MARGIN + BORDER;
-    const y = HEADER_H + (PHOTO_H + MARGIN) * i + MARGIN / 2;
+    const x = PAD + BORDER;
+    const y = PAD + BORDER + (PHOTO_H + GAP) * i;
 
     // Border
-    if (frame.borderColor === "rainbow") {
-      ctx.fillStyle = ["#ff2d78","#facc15","#06b6d4","#a855f7"][i % 4];
-    } else {
-      ctx.fillStyle = frame.borderColor;
-    }
-    roundRect(ctx, x - BORDER, y - BORDER / 2, PHOTO_W + BORDER * 2, PHOTO_H + BORDER, 12);
+    ctx.fillStyle = frame.borderColor === "rainbow"
+      ? ["#ff2d78","#facc15","#06b6d4","#a855f7"][i % 4]
+      : frame.borderColor;
+    roundRect(ctx, x - BORDER, y - BORDER, PHOTO_W + BORDER * 2, PHOTO_H + BORDER * 2, 10);
     ctx.fill();
 
-    // Draw Mongolian corner ornaments ON the border (for MN frames)
-    drawCornerOrnaments(ctx, frame.id, frame.accentColor, x - BORDER, y - BORDER / 2, PHOTO_W + BORDER * 2, PHOTO_H + BORDER);
+    drawCornerOrnaments(ctx, frame.id, frame.accentColor, x - BORDER, y - BORDER, PHOTO_W + BORDER * 2, PHOTO_H + BORDER * 2);
 
     // Photo
     ctx.save();
-    roundRect(ctx, x, y, PHOTO_W, PHOTO_H, 6);
+    roundRect(ctx, x, y, PHOTO_W, PHOTO_H, 4);
     ctx.clip();
     if (filterCSS && filterCSS !== "none") {
       const off = document.createElement("canvas");
@@ -88,23 +76,11 @@ export async function generateStrip(opts: StripOptions): Promise<string> {
     }
     ctx.restore();
 
-    // Number badge
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    ctx.beginPath();
-    ctx.arc(x + 26, y + 26, 18, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "white";
-    ctx.font = "bold 14px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(String(i + 1), x + 26, y + 31);
-
     // Stickers
     if (showStickers) {
       for (const s of stickers.filter((_, si) => si % photos.length === i)) {
-        const sx = x + (s.x / 100) * PHOTO_W;
-        const sy = y + (s.y / 100) * PHOTO_H;
         ctx.save();
-        ctx.translate(sx, sy);
+        ctx.translate(x + (s.x / 100) * PHOTO_W, y + (s.y / 100) * PHOTO_H);
         ctx.rotate((s.rotate * Math.PI) / 180);
         ctx.font = `${s.size * 1.5}px serif`;
         ctx.textAlign = "center";
@@ -113,25 +89,6 @@ export async function generateStrip(opts: StripOptions): Promise<string> {
       }
     }
   }
-
-  // ── Footer caption ────────────────────────────────────────
-  const footerY = HEADER_H + (PHOTO_H + MARGIN) * photos.length + MARGIN * 1.5;
-  ctx.fillStyle = "rgba(255,255,255,0.06)";
-  roundRect(ctx, MARGIN, footerY, STRIP_W - MARGIN * 2, FOOTER_H - 10, 12);
-  ctx.fill();
-
-  ctx.fillStyle   = frame.captionColor;
-  ctx.font        = "bold 20px sans-serif";
-  ctx.textAlign   = "center";
-  ctx.shadowColor = frame.captionColor;
-  ctx.shadowBlur  = 6;
-  const safe = caption.length > 42 ? caption.slice(0, 39) + "…" : caption;
-  ctx.fillText(safe, STRIP_W / 2, footerY + 34);
-  ctx.shadowBlur = 0;
-
-  ctx.fillStyle = "rgba(255,255,255,0.3)";
-  ctx.font = "12px sans-serif";
-  ctx.fillText("sketchbooth.mn • Share this! 📸", STRIP_W / 2, footerY + 60);
 
   return canvas.toDataURL("image/png", 1.0);
 }
