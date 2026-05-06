@@ -41,7 +41,7 @@ export default function Home() {
         }}>
           {/* Nav left */}
           <nav style={{ display: "flex", gap: 20 }}>
-            {[{ href: "/faq", label: "FAQ" }, { href: "/contact", label: "Холбоо" }].map(l => (
+            {[{ href: "/faq", label: "FAQ" }].map(l => (
               <Link key={l.href} href={l.href} style={{
                 fontSize: 11, letterSpacing: "0.06em",
                 color: "#999", textDecoration: "none",
@@ -188,7 +188,6 @@ export default function Home() {
           <div style={{ display: "flex", gap: 20 }}>
             {[
               { href: "/faq", label: "FAQ" },
-              { href: "/contact", label: "Холбоо" },
               { href: "/privacy", label: "Нууцлал" },
             ].map(l => (
               <Link key={l.href} href={l.href} style={{
