@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Camera from "@/components/Camera";
 import ResultScreen from "@/components/ResultScreen";
+import AdBanner from "@/components/AdBanner";
 
 type Page = "home" | "camera" | "result";
 
@@ -113,6 +114,9 @@ export default function Home() {
                 ))}
               </div>
 
+              {/* Ad — home page, below features */}
+              <AdBanner slot="XXXXXXXXXX" format="horizontal" />
+
               {/* CTA */}
               <motion.button
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
@@ -156,6 +160,8 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
               style={{ paddingTop: 32, paddingBottom: 32 }}
             >
+              {/* Ad — result screen */}
+              <AdBanner slot="YYYYYYYYYY" format="horizontal" className="mb-5" />
               <ResultScreen photos={photos} filterCSS={filter} lang="mn" onRetake={onRetake} />
             </motion.div>
           )}
